@@ -1,0 +1,11 @@
+add_library(renderengine renderengine.cpp)
+add_library(renderengineconfiguration renderengineconfiguration.cpp)
+add_library(windowcontroller windowcontroller.cpp)
+
+
+target_link_libraries(renderengineconfiguration PUBLIC vulkan)
+target_link_libraries(renderengineconfiguration PUBLIC glfw3)
+target_link_libraries(renderengineconfiguration PUBLIC X11)
+target_link_libraries(renderengineconfiguration PUBLIC windowcontroller)
+
+target_link_libraries(renderengine PUBLIC renderengineconfiguration)

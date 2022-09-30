@@ -3,7 +3,7 @@
         {
             "name":"linux",
             "includePath": [
-                "${workspaceFolder}/src/**"
+                "${workspaceFolder}/src"
             ],
             "intelliSenseMode": "linux-gcc-x64",
             "compilerPath": "/usr/bin/clang",

@@ -1,3 +1,6 @@
+#ifndef H_RENDERENGINE
+#define H_RENDERENGINE
+
 #include "graphics/renderengineconfiguration.h"
 
 
@@ -32,6 +35,13 @@ public:
      */
     void terminate();
 
+private:
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+public:
+    void drawFrame();
 };
 
 } // namespace Game
+
+#endif 

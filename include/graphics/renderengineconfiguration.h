@@ -1,9 +1,13 @@
+#ifndef H_RENDERENGINECONFIGURATION
+#define H_RENDERENGINECONFIGURATION
+
 #include <vulkan/vulkan.h>
 
 #include <GLFW/glfw3.h>
 #include <vector>
 
 #include "graphics/windowcontroller.h"
+#include "filemanager.h"
 
 namespace Game {
 
@@ -19,6 +23,13 @@ public:
     VkDevice v_device;
     VkSwapchainKHR v_swapchain;
     std::vector<VkImage> v_swapchainImages;
+    std::vector<VkImageView> v_swapchainImageViews;
+    VkRenderPass v_renderPass;
+    VkPipelineLayout v_pipelineLayout;
+    VkPipeline v_graphicsPipeline;
+    std::vector<VkFramebuffer> v_swapchainFramebuffers;
+    VkCommandPool v_commandPool;
+    VkCommandBuffer v_commandBuffer;
 
     // Queue variable
     uint32_t v_graphicFamilyIndex;
@@ -29,6 +40,11 @@ public:
     // Swapchain details
     VkFormat v_swapchainFormat;
     VkExtent2D v_swapchainExtent;
+
+    // Sync objects
+    VkSemaphore imageAvailableSemaphore;
+    VkSemaphore renderFinishedSemaphore;
+    VkFence inFlightFence;
 
 private:
     const std::vector<const char*> EXTENSIONS = {
@@ -72,7 +88,7 @@ private:
      * 
      * @param device device for wich need find queues.
      * 
-     * @return true if manage to find all needed queues.
+     * @returnC true if manage to find all needed queues.
      */
     bool chooseQueues(VkPhysicalDevice& device);
 
@@ -88,13 +104,57 @@ private:
     /**
      * Creating queues object from device.
      */
-    void createQueuesObjects();
+    void getQueuesObjects();
 
 private:
     /**
+     * Creating swapcahin for current device.
      * 
+     * Result stored in @ref RenderEngineConfiguration::v_swapchain "swapchain".
      */
     void createSwapchain();
+
+private:
+    /**
+     * Geting iamges from current swapcahin.
+     * 
+     * Images stored in @ref RenderEngineConfiguration::v_swapchainImages "v_swapcahinImages".
+     */
+    void getSwapchainImages();
+
+private:
+    /**
+     * Creating image view for images of the swapchain.
+     * 
+     * Views a stored in @ref RenderEngineConfiguration::v_swapchainImageViews "v_swapchainImageViews".
+     */
+    void createImagesViews();
+
+private:
+    void createRenderPass();
+
+private:
+    void createGraphicsPipeline();
+
+private:
+    void createShaderModule(const std::vector<char>& code, VkShaderModule& shaderModule);
+
+private:
+    void createFramebuffers();
+
+private:
+    void createCommandPool();
+
+private:
+    void createCommandBuffer();
+
+private:
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+public:
+    void createSyncObjects();
 };
 
 } // namespace Game
+
+#endif

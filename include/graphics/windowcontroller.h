@@ -1,3 +1,6 @@
+#ifndef H_WINDOWCONTROLLER
+#define H_WINDOWCONTROLLER
+
 #include <GLFW/glfw3.h>
 
 
@@ -22,3 +25,5 @@ public:
 };
 
 }
+
+#endif

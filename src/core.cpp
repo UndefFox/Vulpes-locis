@@ -16,3 +16,12 @@ void Core::initializate() {
 void Core::terminate() {
     RenderEngine::getInstance().terminate();
 }
+
+void Core::run() {
+    RenderEngine& engine = RenderEngine::getInstance();
+
+    while (!glfwWindowShouldClose(engine.config.v_windowController.getWindow())) {
+        glfwPollEvents();
+        engine.drawFrame();
+    }
+}

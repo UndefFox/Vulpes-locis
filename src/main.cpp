@@ -7,9 +7,7 @@ int main() {
     Game::Core& core = Game::Core::getInstance();
 
     core.initializate();
-
-    int x;
-    std::cin >> x;
+    core.run();
 
     core.terminate();  
 

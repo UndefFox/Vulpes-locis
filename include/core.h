@@ -1,3 +1,6 @@
+#ifndef H_CORE
+#define H_CORE
+
 #include "graphics/renderengine.h"
 
 #include <iostream>
@@ -32,7 +35,12 @@ public:
      * Stops all procces to shut the game.
      */
     void terminate();
+
+public:
+    void run();
 };
 
 
 } // namespace Game
+
+#endif

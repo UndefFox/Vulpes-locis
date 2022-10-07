@@ -25,11 +25,14 @@ public:
     std::vector<VkImage> v_swapchainImages;
     std::vector<VkImageView> v_swapchainImageViews;
     VkRenderPass v_renderPass;
+    VkDescriptorSetLayout v_descriptorSetLayout;
     VkPipelineLayout v_pipelineLayout;
     VkPipeline v_graphicsPipeline;
     std::vector<VkFramebuffer> v_swapchainFramebuffers;
     VkCommandPool v_commandPool;
     VkCommandBuffer v_commandBuffer;
+    VkDescriptorPool v_descriptorPool;
+    VkDescriptorSet v_descriptorSet;
 
     // Queue variable
     uint32_t v_graphicFamilyIndex;
@@ -45,6 +48,23 @@ public:
     VkSemaphore imageAvailableSemaphore;
     VkSemaphore renderFinishedSemaphore;
     VkFence inFlightFence;
+
+    // Buffers
+    VkBuffer v_vertexBuffer;
+    VkDeviceMemory v_vertexBufferMemory;
+    VkBuffer v_indexBuffer;
+    VkDeviceMemory v_indexBufferMemory;
+    VkBuffer v_uniformBuffer;
+    VkDeviceMemory v_uniformBufferMemory;
+
+    VkImage v_textureImage;
+    VkDeviceMemory v_textureImageMemory;
+    VkImageView v_textureImageView;
+    VkSampler v_textureSampler;
+
+    VkImage v_depthImage;
+    VkDeviceMemory v_depthImageMemory;
+    VkImageView v_depthImageView;
 
 private:
     const std::vector<const char*> EXTENSIONS = {
@@ -134,7 +154,13 @@ private:
     void createRenderPass();
 
 private:
+    void createGraphicsPipelineLayout();
+
+private:
     void createGraphicsPipeline();
+
+private:
+    void createDescriptorSetLayout();
 
 private:
     void createShaderModule(const std::vector<char>& code, VkShaderModule& shaderModule);
@@ -146,13 +172,76 @@ private:
     void createCommandPool();
 
 private:
+    void createDepthResources();
+
+private:
+    void createTextureImage();
+
+private:
+    void createTextureImageView();
+
+private:
+    void createTextureSampler();
+
+private:
+    void createVertexBuffer();
+
+private:
+    void createIndecsBuffer();
+
+private:
+    void createUniformBuffers();
+
+private:
+    void createDescriptorPool();
+
+private:
+    void createDescriptorSet();
+
+private:
     void createCommandBuffer();
 
 private:
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
-public:
+private:
     void createSyncObjects();
+
+public:
+    void recreateSwapchain();
+
+private:
+    void cleanupSwapchain();
+
+private:
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
+public:
+    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+
+public:
+    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
+public:
+    void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+
+public:
+    VkCommandBuffer beginSingleTimeCommands();
+
+public:
+    void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+
+public:
+    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+
+public:
+    void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+
+public:
+    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+
+private:
+    VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 };
 
 } // namespace Game

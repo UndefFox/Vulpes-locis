@@ -17,6 +17,15 @@ private:
 
 
 public:
+    static WindowController& getInstance();
+
+private:
+    WindowController(){};
+
+public:
+    void initializate();
+
+public:
     void createNewWindow();
 
 public:

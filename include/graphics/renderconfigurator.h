@@ -1,5 +1,5 @@
-#ifndef H_RENDERENGINECONFIGURATION
-#define H_RENDERENGINECONFIGURATION
+#ifndef H_RENDERCONFIGURATOR
+#define H_RENDERCONFIGURATOR
 
 #include <vulkan/vulkan.h>
 
@@ -14,35 +14,39 @@ namespace Game {
 /**
  *  Contain set of values and their management wich engine using for render.
  */
-class RenderEngineConfiguration {
+class RenderConfigurator {
 public:
-    VkInstance v_instance;
-    WindowController v_windowController;
-    VkSurfaceKHR v_surface;
-    VkPhysicalDevice v_physicalDevice;
-    VkDevice v_device;
-    VkSwapchainKHR v_swapchain;
-    std::vector<VkImage> v_swapchainImages;
-    std::vector<VkImageView> v_swapchainImageViews;
-    VkRenderPass v_renderPass;
-    VkDescriptorSetLayout v_descriptorSetLayout;
-    VkPipelineLayout v_pipelineLayout;
-    VkPipeline v_graphicsPipeline;
-    std::vector<VkFramebuffer> v_swapchainFramebuffers;
-    VkCommandPool v_commandPool;
-    VkCommandBuffer v_commandBuffer;
-    VkDescriptorPool v_descriptorPool;
-    VkDescriptorSet v_descriptorSet;
+    VkInstance vulkanInstance;
+    VkSurfaceKHR surfaceKHR;
+    VkPhysicalDevice physicalDevice;
+    VkDevice logicalDevice;
+    VkRenderPass renderPass;
+    
+
+    VkSwapchainKHR swapchainKHR;
+    std::vector<VkImage> swapchainImages;
+    std::vector<VkImageView> swapchainImageViews;
+    std::vector<VkFramebuffer> swapchainFramebuffers;
+
+    VkPipelineLayout pipelineLayout;
+    VkPipeline graphicsPipeline;
+    
+    VkCommandPool commandPool;
+    VkCommandBuffer commandBuffer;
+
+    VkDescriptorSetLayout descriptorSetLayout;
+    VkDescriptorPool descriptorPool;
+    VkDescriptorSet descriptorSet;
 
     // Queue variable
-    uint32_t v_graphicFamilyIndex;
-    uint32_t v_presentationFamilyIndex;
-    VkQueue v_graphicsQueue;
+    uint32_t graphicFamilyIndex;
+    uint32_t presentationFamilyIndex;
+    VkQueue graphicsQueue;
     VkQueue v_presentQueue;
     
     // Swapchain details
-    VkFormat v_swapchainFormat;
-    VkExtent2D v_swapchainExtent;
+    VkFormat swapchainFormat;
+    VkExtent2D swapchainExtent;
 
     // Sync objects
     VkSemaphore imageAvailableSemaphore;
@@ -50,13 +54,14 @@ public:
     VkFence inFlightFence;
 
     // Buffers
-    VkBuffer v_vertexBuffer;
-    VkDeviceMemory v_vertexBufferMemory;
-    VkBuffer v_indexBuffer;
-    VkDeviceMemory v_indexBufferMemory;
-    VkBuffer v_uniformBuffer;
-    VkDeviceMemory v_uniformBufferMemory;
+    VkBuffer vertexBuffer;
+    VkDeviceMemory vertexBufferMemory;
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
+    VkBuffer uniformBuffer;
+    VkDeviceMemory uniformBufferMemory;
 
+private:
     VkImage v_textureImage;
     VkDeviceMemory v_textureImageMemory;
     VkImageView v_textureImageView;
@@ -66,8 +71,7 @@ public:
     VkDeviceMemory v_depthImageMemory;
     VkImageView v_depthImageView;
 
-private:
-    const std::vector<const char*> EXTENSIONS = {
+    const std::vector<const char*> requiredDeviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 
@@ -82,15 +86,15 @@ private:
     /**
      * Create new Vkinstance.
      * 
-     * Result stored in @ref RenderEngineConfiguration::v_instance "v_instance" variable.
+     * Result stored in @ref RenderConfigurator::v_instance "v_instance" variable.
      */
     void createVkInstance();
 
 private:
     /**
-     * Create new surface for window stored in @ref RenderEngineConfiguration::v_windowcontroller "v_windowcontroller".
+     * Create new surface for window stored in @ref RenderConfigurator::v_windowcontroller "v_windowcontroller".
      * 
-     * Result stored in @ref RenderEngineConfiguration::v_surface "v_surface".
+     * Result stored in @ref RenderConfigurator::surfaceKHR "surfaceKHR".
      */
     void createSurface();
 
@@ -98,7 +102,7 @@ private:
     /**
      * Choose first suitable device for current configuration.
      * 
-     * Result stored in @ref RenderEngineConfiguration::v_physicalDevice "v_physicalDevice".
+     * Result stored in @ref RenderConfigurator::physicalDevice "physicalDevice".
      */
     void choosePhysicalDevice();
     
@@ -116,7 +120,7 @@ private:
     /**
      * Creating device for choosen physcial device and queues.
      * 
-     * Result stored in @ref RenderEngineConfiguration::v_device "v_device".
+     * Result stored in @ref RenderConfigurator::logicalDevice "logicalDevice".
      */
     void createDevice();
 
@@ -130,7 +134,7 @@ private:
     /**
      * Creating swapcahin for current device.
      * 
-     * Result stored in @ref RenderEngineConfiguration::v_swapchain "swapchain".
+     * Result stored in @ref RenderConfigurator::swapchainKHR "swapchain".
      */
     void createSwapchain();
 
@@ -138,7 +142,7 @@ private:
     /**
      * Geting iamges from current swapcahin.
      * 
-     * Images stored in @ref RenderEngineConfiguration::v_swapchainImages "v_swapcahinImages".
+     * Images stored in @ref RenderConfigurator::swapchainImages "v_swapcahinImages".
      */
     void getSwapchainImages();
 
@@ -146,7 +150,7 @@ private:
     /**
      * Creating image view for images of the swapchain.
      * 
-     * Views a stored in @ref RenderEngineConfiguration::v_swapchainImageViews "v_swapchainImageViews".
+     * Views a stored in @ref RenderConfigurator::swapchainImageViews "swapchainImageViews".
      */
     void createImagesViews();
 

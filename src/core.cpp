@@ -1,5 +1,8 @@
 #include "core.h"
 
+#include "graphics/renderengine.h"
+#include "world.h"
+
 using namespace Game;
 
 Core& Core::getInstance() {
@@ -9,8 +12,15 @@ Core& Core::getInstance() {
 }
 
 void Core::initializate() {
-    RenderEngine::getInstance().initializate();
+    WindowController& windowController = WindowController::getInstance();
+    windowController.initializate();
+    windowController.createNewWindow();
 
+    World& world = World::getInstance();
+    world.initializate();
+
+    RenderEngine& renderEngine = RenderEngine::getInstance();
+    renderEngine.initializate();
 }
 
 void Core::terminate() {
@@ -20,8 +30,14 @@ void Core::terminate() {
 void Core::run() {
     RenderEngine& engine = RenderEngine::getInstance();
 
-    while (!glfwWindowShouldClose(engine.config.v_windowController.getWindow())) {
+    while (!isGameEnterupted()) {
         glfwPollEvents();
         engine.drawFrame();
     }
+}
+
+bool Core::isGameEnterupted() {
+    return (
+        glfwWindowShouldClose(WindowController::getInstance().getWindow()) // Window close signal
+    );
 }

@@ -9,6 +9,8 @@
 #include <chrono>
 
 #include "graphics/ubo.h"
+#include "graphics/objectConstant.h"
+#include "world.h"
 
 using namespace Game;
 
@@ -19,21 +21,70 @@ RenderEngine& RenderEngine::getInstance() {
 }
 
 void RenderEngine::initializate() {
-    glfwInit();
-
-    config.initializate();
+    configurator.initializate();
 
     writeVertexBuffer();
     writeIndexBuffer();
 }
 
 void RenderEngine::terminate() {
-    config.destroy();
+    configurator.destroy();
 
     glfwTerminate();
 }
 
+void RenderEngine::drawFrame() {
+    vkWaitForFences(configurator.logicalDevice, 1, &configurator.inFlightFence, VK_TRUE, UINT64_MAX);
 
+    uint32_t imageIndex;
+    VkResult result = vkAcquireNextImageKHR(configurator.logicalDevice, configurator.swapchainKHR, UINT64_MAX, configurator.imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        configurator.recreateSwapchain();
+        return;
+    }
+
+    vkResetFences(configurator.logicalDevice, 1, &configurator.inFlightFence);
+
+    vkResetCommandBuffer(configurator.commandBuffer, 0);
+
+    recordCommandBuffer(configurator.commandBuffer, imageIndex);
+
+    updateUniformBuffer();
+
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore waitSemaphores[] = {configurator.imageAvailableSemaphore};
+    VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = waitSemaphores;
+    submitInfo.pWaitDstStageMask = waitStages;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &configurator.commandBuffer;
+
+    VkSemaphore signalSemaphores[] = {configurator.renderFinishedSemaphore};
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores;
+
+    vkQueueSubmit(configurator.graphicsQueue, 1, &submitInfo, configurator.inFlightFence);
+
+    VkPresentInfoKHR presentInfo{};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+
+    VkSwapchainKHR swapChains[] = {configurator.swapchainKHR};
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains;
+    presentInfo.pImageIndices = &imageIndex;
+
+    result = vkQueuePresentKHR(configurator.v_presentQueue, &presentInfo);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        configurator.recreateSwapchain();
+    }
+}
 
 void RenderEngine::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     VkCommandBufferBeginInfo beginInfo{};
@@ -43,10 +94,10 @@ void RenderEngine::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t i
 
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass = config.v_renderPass;
-    renderPassInfo.framebuffer = config.v_swapchainFramebuffers[imageIndex];
+    renderPassInfo.renderPass = configurator.renderPass;
+    renderPassInfo.framebuffer = configurator.swapchainFramebuffers[imageIndex];
     renderPassInfo.renderArea.offset = {0, 0};
-    renderPassInfo.renderArea.extent = config.v_swapchainExtent;
+    renderPassInfo.renderArea.extent = configurator.swapchainExtent;
 
     std::array<VkClearValue, 2> clearValues{};
     clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
@@ -56,88 +107,46 @@ void RenderEngine::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t i
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, config.v_graphicsPipeline);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, configurator.graphicsPipeline);
 
-    VkBuffer vertexBuffers[] = {config.v_vertexBuffer};
+    VkBuffer vertexBuffers[] = {configurator.vertexBuffer};
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(commandBuffer, config.v_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(commandBuffer, configurator.indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = static_cast<float>(config.v_swapchainExtent.width);
-    viewport.height = static_cast<float>(config.v_swapchainExtent.height);
+    viewport.width = static_cast<float>(configurator.swapchainExtent.width);
+    viewport.height = static_cast<float>(configurator.swapchainExtent.height);
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor{};
     scissor.offset = {0, 0};
-    scissor.extent = config.v_swapchainExtent;
+    scissor.extent = configurator.swapchainExtent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, config.v_pipelineLayout, 0, 1, &config.v_descriptorSet, 0, nullptr);
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, configurator.pipelineLayout, 0, 1, &configurator.descriptorSet, 0, nullptr);
 
-    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+    for (Object obj : World::getInstance().objects) {
+
+        ObjectConstant constant;
+        constant.pos.x = obj.position[0];
+        constant.pos.y = obj.position[1];
+        constant.pos.z = obj.position[2];
+
+        vkCmdPushConstants(commandBuffer, configurator.pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(constant), &constant);
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+
+    }
+
 
     vkCmdEndRenderPass(commandBuffer);
 
     vkEndCommandBuffer(commandBuffer);
-}
-
-void RenderEngine::drawFrame() {
-    vkWaitForFences(config.v_device, 1, &config.inFlightFence, VK_TRUE, UINT64_MAX);
-
-    uint32_t imageIndex;
-    VkResult result = vkAcquireNextImageKHR(config.v_device, config.v_swapchain, UINT64_MAX, config.imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
-
-    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-        config.recreateSwapchain();
-        return;
-    }
-
-    vkResetFences(config.v_device, 1, &config.inFlightFence);
-
-    vkResetCommandBuffer(config.v_commandBuffer, 0);
-
-    recordCommandBuffer(config.v_commandBuffer, imageIndex);
-
-    updateUniformBuffer();
-
-    VkSubmitInfo submitInfo{};
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-    VkSemaphore waitSemaphores[] = {config.imageAvailableSemaphore};
-    VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = waitSemaphores;
-    submitInfo.pWaitDstStageMask = waitStages;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &config.v_commandBuffer;
-
-    VkSemaphore signalSemaphores[] = {config.renderFinishedSemaphore};
-    submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = signalSemaphores;
-
-    vkQueueSubmit(config.v_graphicsQueue, 1, &submitInfo, config.inFlightFence);
-
-    VkPresentInfoKHR presentInfo{};
-    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-    presentInfo.waitSemaphoreCount = 1;
-    presentInfo.pWaitSemaphores = signalSemaphores;
-
-    VkSwapchainKHR swapChains[] = {config.v_swapchain};
-    presentInfo.swapchainCount = 1;
-    presentInfo.pSwapchains = swapChains;
-    presentInfo.pImageIndices = &imageIndex;
-
-    result = vkQueuePresentKHR(config.v_presentQueue, &presentInfo);
-
-    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-        config.recreateSwapchain();
-    }
 }
 
 void RenderEngine::writeVertexBuffer() {
@@ -145,17 +154,17 @@ void RenderEngine::writeVertexBuffer() {
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
-    config.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+    configurator.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
     void* data;
-    vkMapMemory(config.v_device, stagingBufferMemory, 0, bufferSize, 0, &data);
+    vkMapMemory(configurator.logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, vertices.data(), (size_t) bufferSize);
-    vkUnmapMemory(config.v_device, stagingBufferMemory);
+    vkUnmapMemory(configurator.logicalDevice, stagingBufferMemory);
 
-    config.copyBuffer(stagingBuffer, config.v_vertexBuffer, bufferSize);
+    configurator.copyBuffer(stagingBuffer, configurator.vertexBuffer, bufferSize);
 
-    vkDestroyBuffer(config.v_device, stagingBuffer, nullptr);
-    vkFreeMemory(config.v_device, stagingBufferMemory, nullptr);
+    vkDestroyBuffer(configurator.logicalDevice, stagingBuffer, nullptr);
+    vkFreeMemory(configurator.logicalDevice, stagingBufferMemory, nullptr);
 }
 
 void RenderEngine::writeIndexBuffer() {
@@ -163,17 +172,17 @@ void RenderEngine::writeIndexBuffer() {
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
-    config.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+    configurator.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
     void* data;
-    vkMapMemory(config.v_device, stagingBufferMemory, 0, bufferSize, 0, &data);
+    vkMapMemory(configurator.logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
     memcpy(data, indices.data(), (size_t) bufferSize);
-    vkUnmapMemory(config.v_device, stagingBufferMemory);
+    vkUnmapMemory(configurator.logicalDevice, stagingBufferMemory);
 
-    config.copyBuffer(stagingBuffer, config.v_indexBuffer, bufferSize);
+    configurator.copyBuffer(stagingBuffer, configurator.indexBuffer, bufferSize);
 
-    vkDestroyBuffer(config.v_device, stagingBuffer, nullptr);
-    vkFreeMemory(config.v_device, stagingBufferMemory, nullptr);
+    vkDestroyBuffer(configurator.logicalDevice, stagingBuffer, nullptr);
+    vkFreeMemory(configurator.logicalDevice, stagingBufferMemory, nullptr);
 }
 
 void RenderEngine::updateUniformBuffer() {
@@ -185,11 +194,13 @@ void RenderEngine::updateUniformBuffer() {
     UniformBufferObject ubo{};
     ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.proj = glm::perspective(glm::radians(45.0f), config.v_swapchainExtent.width / (float) config.v_swapchainExtent.height, 0.1f, 10.0f);
+    ubo.proj = glm::perspective(glm::radians(45.0f), configurator.swapchainExtent.width / (float) configurator.swapchainExtent.height, 0.1f, 10.0f);
     ubo.proj[1][1] *= -1;
 
+    World::getInstance().objects[0].position[2] += 0.001;
+
     void* data;
-    vkMapMemory(config.v_device, config.v_uniformBufferMemory, 0, sizeof(ubo), 0, &data);
+    vkMapMemory(configurator.logicalDevice, configurator.uniformBufferMemory, 0, sizeof(ubo), 0, &data);
         memcpy(data, &ubo, sizeof(ubo));
-    vkUnmapMemory(config.v_device, config.v_uniformBufferMemory);
+    vkUnmapMemory(configurator.logicalDevice, configurator.uniformBufferMemory);
 }

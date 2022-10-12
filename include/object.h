@@ -11,6 +11,7 @@ namespace Game
 class Object {
 public:
     std::array<float, 3> position;
+    std::array<float, 3> rotation;
     std::vector<Vertex> mesh;
     std::vector<int> indexes;
 

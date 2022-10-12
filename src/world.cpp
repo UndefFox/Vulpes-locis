@@ -14,6 +14,7 @@ void World::initializate() {
     objects[0].position = {1, 0, 0};
     objects[1].position = {0, 1, 0};
 
+    objects[0].rotation = {45.0f, 0.0f, 0.0f};
 }
 
 

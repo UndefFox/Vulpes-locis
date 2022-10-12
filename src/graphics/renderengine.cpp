@@ -133,10 +133,17 @@ void RenderEngine::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t i
 
     for (Object obj : World::getInstance().objects) {
 
-        ObjectConstant constant;
+        ObjectConstant constant{};
         constant.pos.x = obj.position[0];
         constant.pos.y = obj.position[1];
         constant.pos.z = obj.position[2];
+
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(obj.rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f));
+        rotation = glm::rotate(rotation, glm::radians(obj.rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f));
+        rotation = glm::rotate(rotation, glm::radians(obj.rotation[2]), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        constant.rotation = rotation;
+
 
         vkCmdPushConstants(commandBuffer, configurator.pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(constant), &constant);
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
@@ -192,12 +199,14 @@ void RenderEngine::updateUniformBuffer() {
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
     UniformBufferObject ubo{};
-    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.proj = glm::perspective(glm::radians(45.0f), configurator.swapchainExtent.width / (float) configurator.swapchainExtent.height, 0.1f, 10.0f);
-    ubo.proj[1][1] *= -1;
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 proj = glm::perspective(glm::radians(45.0f), configurator.swapchainExtent.width / (float) configurator.swapchainExtent.height, 0.1f, 10.0f);
+    proj[1][1] *= -1;
 
-    World::getInstance().objects[0].position[2] += 0.001;
+    ubo.model = proj * view * model;
+
+    World::getInstance().objects[0].rotation[1] += 0.5;
 
     void* data;
     vkMapMemory(configurator.logicalDevice, configurator.uniformBufferMemory, 0, sizeof(ubo), 0, &data);

@@ -17,7 +17,7 @@ layout (push_constant) uniform ObjectConstants {
 } objectConstants;
 
 void main() {
-    gl_Position = ubo.model * objectConstants.rotation * vec4(inPosition, 1.0);
+    gl_Position = ubo.model * vec4(inPosition, 1.0);
     fragColor = inColor;
     fragTexCoord = inTexCoord;
 }

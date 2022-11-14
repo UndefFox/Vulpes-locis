@@ -1,6 +1,8 @@
 #include "filemanager.h"
 
-bool FileManager::loadShaderFile(std::string filename, std::vector<char>& code) {
+namespace FileManager {
+
+bool loadShaderFile(std::string filename, std::vector<char>& code) {
     std::ifstream file(SHADER_FILES_DIR + filename, std::ios::ate | std::ios::binary);
 
     if (!file) {
@@ -16,4 +18,6 @@ bool FileManager::loadShaderFile(std::string filename, std::vector<char>& code) 
     file.close();
 
     return true;
+}
+
 }

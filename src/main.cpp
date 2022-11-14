@@ -3,13 +3,9 @@
 #include <iostream>
 
 int main() {
-    
-    Game::Core& core = Game::Core::getInstance();
 
-    core.initializate();
-    core.run();
-
-    core.terminate();  
+    Core::initializate();
+    Core::run();
 
     return 0;
 }

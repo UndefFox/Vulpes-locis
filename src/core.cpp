@@ -1,43 +1,33 @@
 #include "core.h"
 
-#include "graphics/renderengine.h"
-#include "world.h"
+#include "RenderEngine/configurator.h"
+#include "RenderEngine/renderengine.h"
 
-using namespace Game;
+namespace Core {
 
-Core& Core::getInstance() {
-    static Core instance;
 
-    return instance;
+void initializate() {
+    RenderEngine::Configurator::initializate();
+
+    RenderEngine::Configurator::RenderSettings settings;
+    settings.deviceId = 0;
+
+    RenderEngine::Configurator::configurateRender(settings);
+
+    RenderEngine::initializate();
+    
 }
 
-void Core::initializate() {
-    WindowController& windowController = WindowController::getInstance();
-    windowController.initializate();
-    windowController.createNewWindow();
-
-    World& world = World::getInstance();
-    world.initializate();
-
-    RenderEngine& renderEngine = RenderEngine::getInstance();
-    renderEngine.initializate();
-}
-
-void Core::terminate() {
-    RenderEngine::getInstance().terminate();
-}
-
-void Core::run() {
-    RenderEngine& engine = RenderEngine::getInstance();
+void run() {
 
     while (!isGameEnterupted()) {
         glfwPollEvents();
-        engine.drawFrame();
+        RenderEngine::drawFrame();
     }
 }
 
-bool Core::isGameEnterupted() {
-    return (
-        glfwWindowShouldClose(WindowController::getInstance().getWindow()) // Window close signal
-    );
+bool isGameEnterupted() {
+    return false;
+}
+
 }

@@ -1,11 +1,11 @@
-#ifndef H_VERTEX
-#define H_VERTEX
+#ifndef H_RENDERENGINE_VERTEX
+#define H_RENDERENGINE_VERTEX
 
 #include <vulkan/vulkan.h>
 #include <glm/glm.hpp>
 #include <array>
 
-namespace Game {
+namespace RenderEngine {
 
 struct Vertex {
     alignas(16) glm::vec3 pos;

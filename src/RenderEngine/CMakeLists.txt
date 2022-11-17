@@ -1,13 +1,16 @@
 add_library(values private/values.cpp)
-add_library(configurator configurator.cpp)
-add_library(renderengine renderengine.cpp)
+add_library(memory private/memory.cpp)
+add_library(image private/image.cpp)
 
-target_link_libraries(configurator PUBLIC
+add_library(renderengine renderengine.cpp)
+add_library(configurator configurator.cpp)
+
+target_link_libraries(renderengine PUBLIC
+    configurator
     vulkan
     glfw3
     X11
     values
-    filemanager)
-
-target_link_libraries(renderengine PUBLIC
-    configurator)
+    filemanager
+    memory
+    image)

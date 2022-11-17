@@ -3,7 +3,6 @@
         {
             "name":"linux",
             "includePath": [
-                "${workspaceFolder}/include",
                 "${workspaceFolder}/src"
             ],
             "intelliSenseMode": "linux-gcc-x64",

@@ -12,12 +12,11 @@ layout(binding = 0) uniform UniformBufferObject {
 } ubo;
 
 layout (push_constant) uniform ObjectConstants {
-    mat4 rotation;
     vec3 pos;
 } objectConstants;
 
 void main() {
-    gl_Position = ubo.model * vec4(inPosition, 1.0);
-    fragColor = inColor;
+    gl_Position = ubo.model * vec4(inPosition + objectConstants.pos, 1.0);
+    fragColor = vec3(1.0f, 1.0f, 1.0f);
     fragTexCoord = inTexCoord;
 }

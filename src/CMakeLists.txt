@@ -1,5 +1,3 @@
-add_subdirectory(FileManager)
-
 add_subdirectory(RenderEngine)
 
 add_executable(vulpeslocis main.cpp)

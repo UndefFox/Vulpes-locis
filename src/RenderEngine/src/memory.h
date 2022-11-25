@@ -5,11 +5,6 @@
 
 namespace RenderEngine {
 
-/**
- * Memoy namespace contains tools for runtime memory.
- */
-namespace Memory {
-
 void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
 void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size, VkDeviceSize dstOffset);
@@ -21,8 +16,6 @@ void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 void allocateMemory(uint32_t typeFilter, VkMemoryPropertyFlags properties, VkMemoryRequirements memoryRequirements, VkDeviceMemory& memory);
 
 void copyDataToMemory(VkDeviceMemory& destinationMemory, VkDeviceSize& size, void* source);
-
-}
 
 }
 

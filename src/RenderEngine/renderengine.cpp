@@ -8,17 +8,21 @@
 #include <chrono>
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
+#include <vector>
 
-#include "private/vertex.h"
-#include "private/memory.h"
-#include "private/values.h"
-#include "private/ubo.h"
+#include "src/vertex.h"
+#include "src/memory.h"
+#include "src/values.h"
+#include "src/configurator.h"
+#include "src/ubo.h"
+#include "src/storage.h"
+#include "src/objectConstant.h"
 
 namespace RenderEngine {
 
 namespace {
 
-void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, std::vector<int> IDs, std::vector<std::array<float, 3>> dinamic) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -26,10 +30,10 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass =  Values::renderPass;
-    renderPassInfo.framebuffer =  Values::swapchainFramebuffers[imageIndex];
+    renderPassInfo.renderPass =   renderPass;
+    renderPassInfo.framebuffer =   swapchainFramebuffers[imageIndex];
     renderPassInfo.renderArea.offset = {0, 0};
-    renderPassInfo.renderArea.extent =  Values::swapchainExtent;
+    renderPassInfo.renderArea.extent =   swapchainExtent;
 
     std::array<VkClearValue, 2> clearValues{};
     clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
@@ -39,31 +43,38 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,  Values::graphicsPipeline);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,   graphicsPipeline);
 
-    VkBuffer vertexBuffers[] = { Values::vertexBuffer};
+    VkBuffer vertexBuffers[] = {  vertexBuffer};
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(commandBuffer, Values::indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(commandBuffer,  indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = static_cast<float>( Values::swapchainExtent.width);
-    viewport.height = static_cast<float>( Values::swapchainExtent.height);
+    viewport.width = static_cast<float>(  swapchainExtent.width);
+    viewport.height = static_cast<float>(  swapchainExtent.height);
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor{};
     scissor.offset = {0, 0};
-    scissor.extent =  Values::swapchainExtent;
+    scissor.extent =   swapchainExtent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,  Values::pipelineLayout, 0, 1, & Values::descriptorSet, 0, nullptr);
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,   pipelineLayout, 0, 1, &  descriptorSet, 0, nullptr);
 
-    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), 1, 0, 0, 0);
+    ObjectConstant constant{};
+    for (int i = 0; i < IDs.size(); i++) {
+        constant.pos = {dinamic[i][0], dinamic[i][1], dinamic[i][2]};
+
+        vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(constant), &constant);
+        
+        vkCmdDrawIndexed(commandBuffer, savedObjects[IDs[i]].indexAmount, 1, savedObjects[IDs[i]].firstIndexIndex, savedObjects[IDs[i]].firstVertexIndex, 0);
+    }
 
     vkCmdEndRenderPass(commandBuffer);
 
@@ -71,93 +82,149 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 }
 
 void updateUniformBuffer() {
-    static auto startTime = std::chrono::high_resolution_clock::now();
-
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
     UniformBufferObject ubo{};
     glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 proj = glm::perspective(glm::radians(45.0f),  Values::swapchainExtent.width / (float)  Values::swapchainExtent.height, 0.1f, 10.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(45.0f),   swapchainExtent.width / (float)   swapchainExtent.height, 0.1f, 10.0f);
     proj[1][1] *= -1;
 
     ubo.model = proj * view * model;
 
     void* data;
-    vkMapMemory( Values::logicalDevice,  Values::uniformBufferMemory, 0, sizeof(ubo), 0, &data);
+    vkMapMemory(  logicalDevice,   uniformBufferMemory, 0, sizeof(ubo), 0, &data);
         memcpy(data, &ubo, sizeof(ubo));
-    vkUnmapMemory( Values::logicalDevice,  Values::uniformBufferMemory);
+    vkUnmapMemory(  logicalDevice,   uniformBufferMemory);
 }
 
 }
 
-void drawFrame() {
-    vkWaitForFences(Values::logicalDevice, 1, &Values::inFlightFence, VK_TRUE, UINT64_MAX);
+void initializate() {
+    glfwInit();
+
+    createVulkanInstance();
+    createWindow();
+}
+
+void terminate() {
+    destroySwapchain();
+    destroySyncObjects();
+    destroyCommandPool();
+    destroyDesriptorPool();
+    destroyBuffers();
+    destroyDepthResources();
+    destroyGraphicsPipeline();
+    destroyGraphicsPipelineLayout();
+    destroyRenderPass();
+    destroyDevice();
+}
+
+void drawFrame(std::vector<int> IDs, std::vector<std::array<float, 3>> dinamic) {
+    vkWaitForFences( logicalDevice, 1, & inFlightFence, VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
-    VkResult result = vkAcquireNextImageKHR( Values::logicalDevice,  Values::swapchainKHR, UINT64_MAX,  Values::imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(  logicalDevice,   swapchainKHR, UINT64_MAX,   imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-        vkDeviceWaitIdle(Values::logicalDevice);
+        vkDeviceWaitIdle( logicalDevice);
 
-        Values::destroyDepthResources();
-        Values::destroySwapchain();
-        Values::createSwapchain();
-        Values::createDepthResources();
-        Values::createFramebuffers();
+         destroyDepthResources();
+         destroySwapchain();
+         createSwapchain();
+         createDepthResources();
+         createFramebuffers();
 
         return;
     }
 
-    vkResetFences(Values::logicalDevice, 1, & Values::inFlightFence);
+    vkResetFences( logicalDevice, 1, &  inFlightFence);
 
-    vkResetCommandBuffer(Values::commandBuffer, 0);
+    vkResetCommandBuffer( commandBuffer, 0);
 
-    recordCommandBuffer(Values::commandBuffer, imageIndex);
+    recordCommandBuffer( commandBuffer, imageIndex, IDs, dinamic);
 
     updateUniformBuffer();
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-    VkSemaphore waitSemaphores[] = { Values::imageAvailableSemaphore};
+    VkSemaphore waitSemaphores[] = {  imageAvailableSemaphore};
     VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     submitInfo.waitSemaphoreCount = 1;
     submitInfo.pWaitSemaphores = waitSemaphores;
     submitInfo.pWaitDstStageMask = waitStages;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = & Values::commandBuffer;
+    submitInfo.pCommandBuffers = &  commandBuffer;
 
-    VkSemaphore signalSemaphores[] = { Values::renderFinishedSemaphore};
+    VkSemaphore signalSemaphores[] = {  renderFinishedSemaphore};
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    vkQueueSubmit( Values::graphicsQueue, 1, &submitInfo,  Values::inFlightFence);
+    vkQueueSubmit(  graphicsQueue, 1, &submitInfo,   inFlightFence);
 
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
     presentInfo.waitSemaphoreCount = 1;
     presentInfo.pWaitSemaphores = signalSemaphores;
 
-    VkSwapchainKHR swapChains[] = { Values::swapchainKHR};
+    VkSwapchainKHR swapChains[] = {  swapchainKHR};
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = swapChains;
     presentInfo.pImageIndices = &imageIndex;
 
-    result = vkQueuePresentKHR( Values::presentQueue, &presentInfo);
+    result = vkQueuePresentKHR(  presentQueue, &presentInfo);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-        vkDeviceWaitIdle(Values::logicalDevice);
+        vkDeviceWaitIdle( logicalDevice);
 
-        Values::destroyDepthResources();
-        Values::destroySwapchain();
-        Values::createSwapchain();
-        Values::createDepthResources();
-        Values::createFramebuffers();
+         destroyDepthResources();
+         destroySwapchain();
+         createSwapchain();
+         createDepthResources();
+         createFramebuffers();
 
     }
 }
 
+void configurateRender(RenderSettings& settings) {
+    setPhysicalDevice(settings.deviceId);
+    createDevice();
+    updateSwapchainConfiguration();
+    createRenderPass();
+    createDescriptorSetLayout();
+    createGraphicsPipelineLayout();
+    createGraphicsPipeline(settings.vertexShaderFile, settings.fragmentShaderFile);
+    createCommandPool();
+    createCommandBuffer();
+    createBuffers();
+    createDescriptorPool();
+    createDescriptorSet();
+    createSyncObjects();
+    createSwapchain();
+    createDepthResources();
+    createFramebuffers();
+}
+
+std::vector<DeviceInfo> getAvailableDevices() {
+
+    std::vector<VkPhysicalDevice> devices =  getAvailablePhysicalDevices();
+    std::vector<DeviceInfo> infos(devices.size());
+    for (int i = 0; i < devices.size(); i++) {
+        VkPhysicalDeviceProperties properties{};
+        vkGetPhysicalDeviceProperties(devices[i], &properties);
+        
+        infos[i].deviceId = properties.deviceID;
+        infos[i].deviceName = properties.deviceName;
+    }
+
+    return infos;
+}
+
+int addObject(Mesh mesh) {
+    AddMeshToMemoryInfo info{};
+    info.vertices = mesh.vertices;
+    info.indexes = mesh.indexes;
+
+    return addMeshToMemory(info);
+}
 
 }

@@ -1,6 +1,5 @@
-#include "values.h"
+#include "configurator.h"
 
-#include <string>
 #include <set>
 #include <algorithm>
 #include <limits>
@@ -10,59 +9,10 @@
 #include "vertex.h"
 #include "memory.h"
 #include "ubo.h"
+#include "io.h"
+#include "objectConstant.h"
 
-#include "FileManager/filemanager.h"
-
-namespace RenderEngine::Values {
-
-VkInstance vulkanInstance;
-VkSurfaceKHR surfaceKHR;
-GLFWwindow* window;
-VkPhysicalDevice physcialDevice;
-VkDevice logicalDevice;
-VkRenderPass renderPass;
-
-VkSwapchainKHR swapchainKHR;
-std::vector<VkImage> swapchainImages;
-std::vector<VkImageView> swapchainImageViews;
-std::vector<VkFramebuffer> swapchainFramebuffers;
-
-VkPipelineLayout pipelineLayout;
-VkPipeline graphicsPipeline;
-    
-VkCommandPool commandPool;
-VkCommandBuffer commandBuffer;
-
-VkDescriptorSetLayout descriptorSetLayout;
-VkDescriptorPool descriptorPool;
-VkDescriptorSet descriptorSet;
-
-// Queue variable
-uint32_t graphicFamilyIndex;
-uint32_t presentationFamilyIndex;
-VkQueue graphicsQueue;
-VkQueue presentQueue;
-    
-// Swapchain details
-VkSurfaceFormatKHR swapchainFormat;
-VkExtent2D swapchainExtent;
-
-// Sync objects
-VkSemaphore imageAvailableSemaphore;
-VkSemaphore renderFinishedSemaphore;
-VkFence inFlightFence;
-
-// Buffers
-VkBuffer vertexBuffer;
-VkDeviceMemory vertexBufferMemory;
-VkBuffer indexBuffer;
-VkDeviceMemory indexBufferMemory;
-VkBuffer uniformBuffer;
-VkDeviceMemory uniformBufferMemory;
-
-VkImage depthImage;
-VkDeviceMemory depthImageMemory;
-VkImageView depthImageView;
+namespace RenderEngine {
 
 namespace {
 
@@ -338,7 +288,7 @@ void createSwapchain() {
     swapchainImageViews.resize(swapchainImages.size());
 
     for (uint32_t i = 0; i < swapchainImages.size(); i++) {
-        swapchainImageViews[i] = Image::createImageView(swapchainImages[i], swapchainFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
+        swapchainImageViews[i] = createImageView(swapchainImages[i], swapchainFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
     }
 }
 
@@ -389,7 +339,7 @@ void createRenderPass() {
     colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
     VkAttachmentDescription depthAttachment{};
-    depthAttachment.format = Image::findSupportedFormat(
+    depthAttachment.format = findSupportedFormat(
         {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
         VK_IMAGE_TILING_OPTIMAL,
         VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
@@ -466,11 +416,18 @@ void createDescriptorSetLayout() {
 
 
 void createGraphicsPipelineLayout() {
+    VkPushConstantRange constans;
+    constans.offset = 0;
+    constans.size = sizeof(ObjectConstant);
+    constans.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = 1;
     pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
-    pipelineLayoutInfo.pushConstantRangeCount = 0;
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &constans;
+
 
     vkCreatePipelineLayout(logicalDevice, &pipelineLayoutInfo, nullptr, &pipelineLayout);
 }
@@ -480,12 +437,12 @@ void destroyGraphicsPipelineLayout() {
 }
 
 
-void createGraphicsPipeline() {
+void createGraphicsPipeline(std::string vertexShader, std::string fragmentShader) {
     std::vector<char> vertShader;
     std::vector<char> fragShader;
 
-    FileManager::loadShaderFile(FILE_NAME_VERT_SHADER, vertShader);
-    FileManager::loadShaderFile(FILE_NAME_FRAG_SHADER, fragShader);
+    loadShaderFile(vertexShader, vertShader);
+    loadShaderFile(fragmentShader, fragShader);
 
     VkShaderModule vertModule{};
     VkShaderModule fragModule{};
@@ -650,16 +607,16 @@ void createCommandBuffer() {
 
 
 void createDepthResources() {
-    VkFormat depthFormat = Image::findSupportedFormat(
+    VkFormat depthFormat = findSupportedFormat(
         {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
         VK_IMAGE_TILING_OPTIMAL,
         VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
     );
 
-    Image::createImage(swapchainExtent.width, swapchainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
-    depthImageView = Image::createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+    createImage(swapchainExtent.width, swapchainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
+    depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 
-    Image::transitionImageLayout(depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+    transitionImageLayout(depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
 void destroyDepthResources() {
@@ -673,13 +630,13 @@ void createBuffers() {
     VkDeviceSize bufferSize;
 
     bufferSize = sizeof(Vertex) * 1024;
-    Memory::createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
+    createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 
     bufferSize = sizeof(uint16_t) * 1024;
-    Memory::createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+    createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 
     bufferSize = sizeof(UniformBufferObject);
-    Memory::createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffer, uniformBufferMemory);
+    createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffer, uniformBufferMemory);
 
 }
 
@@ -760,4 +717,5 @@ void destroySyncObjects() {
     vkDestroySemaphore(logicalDevice, renderFinishedSemaphore, nullptr);
     vkDestroySemaphore(logicalDevice, imageAvailableSemaphore, nullptr);
 }
-} // namespace RenderEngine::Values
+
+}

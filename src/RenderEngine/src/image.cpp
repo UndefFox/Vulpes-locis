@@ -3,7 +3,7 @@
 #include "values.h"
 #include "memory.h"
 
-namespace RenderEngine::Image {
+namespace RenderEngine {
 
 namespace {
 
@@ -29,18 +29,18 @@ void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 
-    vkCreateImage(Values::logicalDevice, &imageInfo, nullptr, &image);
+    vkCreateImage( logicalDevice, &imageInfo, nullptr, &image);
 
     VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(Values::logicalDevice, image, &memRequirements);
+    vkGetImageMemoryRequirements( logicalDevice, image, &memRequirements);
 
-    Memory::allocateMemory(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, memRequirements, imageMemory);
+    allocateMemory(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, memRequirements, imageMemory);
 
-    vkBindImageMemory(Values::logicalDevice, image, imageMemory, 0);
+    vkBindImageMemory( logicalDevice, image, imageMemory, 0);
 }
 
 void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
-    VkCommandBuffer commandBuffer = Memory::beginSingleTimeCommands();
+    VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
     VkImageMemoryBarrier barrier{};
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -96,11 +96,11 @@ void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayo
         1, &barrier
     );
 
-    Memory::endSingleTimeCommands(commandBuffer);
+    endSingleTimeCommands(commandBuffer);
 }
 
 void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height) {
-    VkCommandBuffer commandBuffer = Memory::beginSingleTimeCommands();
+    VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
     VkBufferImageCopy region{};
     region.bufferOffset = 0;
@@ -128,7 +128,7 @@ void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t 
         &region
     );
 
-    Memory::endSingleTimeCommands(commandBuffer);
+    endSingleTimeCommands(commandBuffer);
 }
 
 VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
@@ -144,7 +144,7 @@ VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags a
     viewInfo.subresourceRange.layerCount = 1;
 
     VkImageView imageView;
-    vkCreateImageView(Values::logicalDevice, &viewInfo, nullptr, &imageView);
+    vkCreateImageView( logicalDevice, &viewInfo, nullptr, &imageView);
 
     return imageView;
 }
@@ -152,7 +152,7 @@ VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags a
 VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
     for (VkFormat format : candidates) {
         VkFormatProperties props;
-        vkGetPhysicalDeviceFormatProperties(Values::physcialDevice, format, &props);
+        vkGetPhysicalDeviceFormatProperties( physcialDevice, format, &props);
 
         if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
             return format;

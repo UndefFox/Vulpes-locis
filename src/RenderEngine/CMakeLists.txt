@@ -1,11 +1,10 @@
+# src files
 add_library(values          src/values.cpp)
 add_library(memory          src/memory.cpp)
 add_library(image           src/image.cpp)
 add_library(io              src/io.cpp)
-add_library(configurator    src/configurator.cpp)
-add_library(storage         src/storage.cpp)
+add_library(valuesfactory   src/valuesfactory.cpp)
 
-add_library(renderengine renderengine.cpp)
 
 target_link_libraries(values PUBLIC
     vulkan
@@ -18,19 +17,36 @@ target_link_libraries(memory PUBLIC
 target_link_libraries(image PUBLIC
     values)
 
-target_link_libraries(configurator PUBLIC
+target_link_libraries(valuesfactory PUBLIC
     values
     memory
     image
     io)
 
-target_link_libraries(storage PUBLIC
-    memory)
 
-target_link_libraries(renderengine PUBLIC
+# interface files
+add_library(renderengine    INTERFACE)
+
+add_library(storage         storage.cpp)
+add_library(configurator    configurator.cpp)
+add_library(renderer        renderer.cpp)
+
+
+target_link_libraries(storage PUBLIC
+    memory
+    values
+    vulkan)
+
+target_link_libraries(configurator PUBLIC
+    glfw3
+    valuesfactory)
+
+target_link_libraries(renderer PUBLIC
+    vulkan)
+
+target_link_libraries(renderengine INTERFACE
     storage
     configurator
+    renderer)
 
-    vulkan
-    glfw3
-    X11)
+

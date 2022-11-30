@@ -1,7 +1,9 @@
-#ifndef H_RENDERENGINE_CONFIGURATOR
-#define H_RENDERENGINE_CONFIGURATOR
+#ifndef H_RENDERENGINE_VALUESFACTORY
+#define H_RENDERENGINE_VALUESFACTORY
 
 #include <string>
+#include <vulkan/vulkan.h>
+#include <GLFW/glfw3.h>
 
 #include "values.h"
 
@@ -11,9 +13,12 @@ void createVulkanInstance();
 void destroyVulkanInstance();
 
 /**
- * Creates window and surface where rendered image will be presented.
+ * Creating surface for a window.
  */
-void createWindow();
+void createSurface();
+
+void destroySurface();
+
 
 /**
  * Gets all devices detected on the computer.
@@ -31,7 +36,7 @@ std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
  * settings maybe unavailable.
  * @returns false if device can't render game at all.
  */
-bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device);
+bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device, VkSurfaceKHR testSurface);
 
 
 void setPhysicalDevice(uint32_t deviceId);

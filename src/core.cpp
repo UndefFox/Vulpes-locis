@@ -38,30 +38,38 @@ std::vector<std::array<float, 3>> posses = {
 
 namespace Core {
 
+GLFWwindow* window;
 
 void initializate() {
-    RenderEngine::initializate();
+    glfwInit();
 
-    std::vector<RenderEngine::DeviceInfo> infos = RenderEngine::getAvailableDevices();
+    RenderEngine::initializate();
+   
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    window = glfwCreateWindow(430, 200, "Vulpes locis", nullptr, nullptr);
+
+    std::vector<RenderEngine::DeviceInfo> infos = RenderEngine::getAvailableDevices(window);
 
     RenderEngine::RenderSettings settings{};
     settings.deviceId = infos[0].deviceId;
+    settings.targetWindow = window;
     settings.vertexShaderFile = "shaders/vertical.spv";
     settings.fragmentShaderFile = "shaders/fragment.spv";
 
     RenderEngine::configurateRender(settings);
-
+    RenderEngine::configurateRender(settings);
 
     RenderEngine::Mesh mesh{};
     mesh.vertices = vertices1;
     mesh.indexes = indices1;
 
-    RenderEngine::addObject(mesh);
+    RenderEngine::addMesh(mesh);
 
     mesh.vertices = vertices2;
     mesh.indexes = indices2;
 
-    RenderEngine::addObject(mesh);
+    RenderEngine::addMesh(mesh);
 }
 
 
@@ -75,7 +83,7 @@ void run() {
 }
 
 bool isGameEnterupted() {
-    return glfwWindowShouldClose(RenderEngine::window);
+    return glfwWindowShouldClose(window);
 }
 
 }

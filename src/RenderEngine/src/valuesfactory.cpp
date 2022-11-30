@@ -1,4 +1,4 @@
-#include "configurator.h"
+#include "valuesfactory.h"
 
 #include <set>
 #include <algorithm>
@@ -16,7 +16,7 @@ namespace RenderEngine {
 
 namespace {
 
-bool chooseQueues(VkPhysicalDevice& device) {
+bool chooseQueues(VkPhysicalDevice& device, VkSurfaceKHR testSurface = surfaceKHR) {
     bool graphicFinded = false;
     bool presentationFinded = false;
 
@@ -34,7 +34,7 @@ bool chooseQueues(VkPhysicalDevice& device) {
         }
 
         VkBool32 supportPresentationCheck = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surfaceKHR, &supportPresentationCheck);
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, testSurface, &supportPresentationCheck);
 
         if (!presentationFinded && supportPresentationCheck) {
             presentationFamilyIndex = i;
@@ -57,6 +57,14 @@ void createShaderModule(const std::vector<char>& code, VkShaderModule& shaderMod
 }
 } // namespace
 
+
+void createSurface() {
+    glfwCreateWindowSurface(vulkanInstance, window, nullptr, &surfaceKHR);
+}
+
+void destroySurface() {
+    vkDestroySurfaceKHR(vulkanInstance, surfaceKHR, nullptr);
+}
 
 void createVulkanInstance() {
     VkApplicationInfo appInfo{};
@@ -89,13 +97,6 @@ void destroyVulkanInstance() {
 }
 
 
-void createWindow() {
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    window = glfwCreateWindow(430, 200, "Vulpes locis", nullptr, nullptr);
-
-    glfwCreateWindowSurface(vulkanInstance, window, nullptr, &surfaceKHR);
-}
-
 std::vector<VkPhysicalDevice> getAvailablePhysicalDevices() {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(vulkanInstance, &deviceCount, nullptr);
@@ -105,7 +106,7 @@ std::vector<VkPhysicalDevice> getAvailablePhysicalDevices() {
     return physicalDevices;
 }
 
-bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device) {
+bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device, VkSurfaceKHR testSurface) {
     // Check device properties and features
     VkPhysicalDeviceProperties properties;
     VkPhysicalDeviceFeatures features;
@@ -144,7 +145,7 @@ bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device) {
 
 
     // Checking for required families support
-    if (!chooseQueues(device)) {
+    if (!chooseQueues(device, testSurface)) {
         return false;
     }
 

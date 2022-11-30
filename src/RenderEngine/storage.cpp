@@ -1,14 +1,16 @@
 #include "storage.h"
 
-#include "memory.h"
-#include "vertex.h"
+#include "src/memory.h"
+#include "src/vertex.h"
+#include "src/values.h"
 
 #include <vulkan/vulkan.h>
 #include <cstring>
 
+
 namespace RenderEngine {
 
-int addMeshToMemory(AddMeshToMemoryInfo& meshData) {
+int addMesh(Mesh& meshData) {
     savedObjects.push_back({});
 
     std::vector<Vertex> vertices(meshData.vertices.size());

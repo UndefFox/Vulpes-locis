@@ -1,22 +1,14 @@
-#include "renderengine.h"
+#include "renderer.h"
 
-#include <cstring>
+#include "src/values.h"
+#include "src/valuesfactory.h"
+#include "src/ubo.h"
+#include "src/objectConstant.h"
 
-#define GLM_FORCE_RADIANS
+#include <vulkan/vulkan.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <chrono>
-#include <vulkan/vulkan.h>
-#include <GLFW/glfw3.h>
-#include <vector>
-
-#include "src/vertex.h"
-#include "src/memory.h"
-#include "src/values.h"
-#include "src/configurator.h"
-#include "src/ubo.h"
-#include "src/storage.h"
-#include "src/objectConstant.h"
+#include <cstring>
 
 namespace RenderEngine {
 
@@ -98,25 +90,6 @@ void updateUniformBuffer() {
 
 }
 
-void initializate() {
-    glfwInit();
-
-    createVulkanInstance();
-    createWindow();
-}
-
-void terminate() {
-    destroySwapchain();
-    destroySyncObjects();
-    destroyCommandPool();
-    destroyDesriptorPool();
-    destroyBuffers();
-    destroyDepthResources();
-    destroyGraphicsPipeline();
-    destroyGraphicsPipelineLayout();
-    destroyRenderPass();
-    destroyDevice();
-}
 
 void drawFrame(std::vector<int> IDs, std::vector<std::array<float, 3>> dinamic) {
     vkWaitForFences( logicalDevice, 1, & inFlightFence, VK_TRUE, UINT64_MAX);
@@ -185,46 +158,5 @@ void drawFrame(std::vector<int> IDs, std::vector<std::array<float, 3>> dinamic) 
     }
 }
 
-void configurateRender(RenderSettings& settings) {
-    setPhysicalDevice(settings.deviceId);
-    createDevice();
-    updateSwapchainConfiguration();
-    createRenderPass();
-    createDescriptorSetLayout();
-    createGraphicsPipelineLayout();
-    createGraphicsPipeline(settings.vertexShaderFile, settings.fragmentShaderFile);
-    createCommandPool();
-    createCommandBuffer();
-    createBuffers();
-    createDescriptorPool();
-    createDescriptorSet();
-    createSyncObjects();
-    createSwapchain();
-    createDepthResources();
-    createFramebuffers();
-}
-
-std::vector<DeviceInfo> getAvailableDevices() {
-
-    std::vector<VkPhysicalDevice> devices =  getAvailablePhysicalDevices();
-    std::vector<DeviceInfo> infos(devices.size());
-    for (int i = 0; i < devices.size(); i++) {
-        VkPhysicalDeviceProperties properties{};
-        vkGetPhysicalDeviceProperties(devices[i], &properties);
-        
-        infos[i].deviceId = properties.deviceID;
-        infos[i].deviceName = properties.deviceName;
-    }
-
-    return infos;
-}
-
-int addObject(Mesh mesh) {
-    AddMeshToMemoryInfo info{};
-    info.vertices = mesh.vertices;
-    info.indexes = mesh.indexes;
-
-    return addMeshToMemory(info);
-}
-
+    
 }

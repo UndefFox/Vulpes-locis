@@ -29,14 +29,14 @@ void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 
-    vkCreateImage( logicalDevice, &imageInfo, nullptr, &image);
+    vkCreateImage(logicalDevice, &imageInfo, nullptr, &image);
 
     VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements( logicalDevice, image, &memRequirements);
+    vkGetImageMemoryRequirements(logicalDevice, image, &memRequirements);
 
     allocateMemory(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, memRequirements, imageMemory);
 
-    vkBindImageMemory( logicalDevice, image, imageMemory, 0);
+    vkBindImageMemory(logicalDevice, image, imageMemory, 0);
 }
 
 void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
@@ -144,7 +144,7 @@ VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags a
     viewInfo.subresourceRange.layerCount = 1;
 
     VkImageView imageView;
-    vkCreateImageView( logicalDevice, &viewInfo, nullptr, &imageView);
+    vkCreateImageView(logicalDevice, &viewInfo, nullptr, &imageView);
 
     return imageView;
 }

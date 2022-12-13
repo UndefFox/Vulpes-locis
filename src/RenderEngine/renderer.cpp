@@ -22,10 +22,10 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, std
 
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass =   renderPass;
-    renderPassInfo.framebuffer =   swapchainFramebuffers[imageIndex];
+    renderPassInfo.renderPass = renderPass;
+    renderPassInfo.framebuffer = swapchainFramebuffers[imageIndex];
     renderPassInfo.renderArea.offset = {0, 0};
-    renderPassInfo.renderArea.extent =   swapchainExtent;
+    renderPassInfo.renderArea.extent = swapchainExtent;
 
     std::array<VkClearValue, 2> clearValues{};
     clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
@@ -35,26 +35,26 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, std
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,   graphicsPipeline);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
     VkBuffer vertexBuffers[] = {  vertexBuffer};
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(commandBuffer,  indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = static_cast<float>(  swapchainExtent.width);
-    viewport.height = static_cast<float>(  swapchainExtent.height);
+    viewport.width = static_cast<float>(swapchainExtent.width);
+    viewport.height = static_cast<float>(swapchainExtent.height);
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor{};
     scissor.offset = {0, 0};
-    scissor.extent =   swapchainExtent;
+    scissor.extent = swapchainExtent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,   pipelineLayout, 0, 1, &  descriptorSet, 0, nullptr);
@@ -77,15 +77,15 @@ void updateUniformBuffer() {
     UniformBufferObject ubo{};
     glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 proj = glm::perspective(glm::radians(45.0f),   swapchainExtent.width / (float)   swapchainExtent.height, 0.1f, 10.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(45.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f);
     proj[1][1] *= -1;
 
     ubo.model = proj * view * model;
 
     void* data;
-    vkMapMemory(  logicalDevice,   uniformBufferMemory, 0, sizeof(ubo), 0, &data);
+    vkMapMemory(logicalDevice, uniformBufferMemory, 0, sizeof(ubo), 0, &data);
         memcpy(data, &ubo, sizeof(ubo));
-    vkUnmapMemory(  logicalDevice,   uniformBufferMemory);
+    vkUnmapMemory(logicalDevice, uniformBufferMemory);
 }
 
 }
@@ -109,45 +109,45 @@ void drawFrame(std::vector<int> IDs, std::vector<std::array<float, 3>> dinamic) 
         return;
     }
 
-    vkResetFences( logicalDevice, 1, &  inFlightFence);
+    vkResetFences(logicalDevice, 1, &  inFlightFence);
 
-    vkResetCommandBuffer( commandBuffer, 0);
+    vkResetCommandBuffer(commandBuffer, 0);
 
-    recordCommandBuffer( commandBuffer, imageIndex, IDs, dinamic);
+    recordCommandBuffer(commandBuffer, imageIndex, IDs, dinamic);
 
     updateUniformBuffer();
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-    VkSemaphore waitSemaphores[] = {  imageAvailableSemaphore};
+    VkSemaphore waitSemaphores[] = {imageAvailableSemaphore};
     VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     submitInfo.waitSemaphoreCount = 1;
     submitInfo.pWaitSemaphores = waitSemaphores;
     submitInfo.pWaitDstStageMask = waitStages;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &  commandBuffer;
+    submitInfo.pCommandBuffers = &commandBuffer;
 
-    VkSemaphore signalSemaphores[] = {  renderFinishedSemaphore};
+    VkSemaphore signalSemaphores[] = {renderFinishedSemaphore};
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    vkQueueSubmit(  graphicsQueue, 1, &submitInfo,   inFlightFence);
+    vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence);
 
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
     presentInfo.waitSemaphoreCount = 1;
     presentInfo.pWaitSemaphores = signalSemaphores;
 
-    VkSwapchainKHR swapChains[] = {  swapchainKHR};
+    VkSwapchainKHR swapChains[] = {swapchainKHR};
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = swapChains;
     presentInfo.pImageIndices = &imageIndex;
 
-    result = vkQueuePresentKHR(  presentQueue, &presentInfo);
+    result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-        vkDeviceWaitIdle( logicalDevice);
+        vkDeviceWaitIdle(logicalDevice);
 
          destroyDepthResources();
          destroySwapchain();

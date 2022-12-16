@@ -1,7 +1,10 @@
 #include "core.h"
 
-#include "RenderEngine/renderengine.h"
 #include "RenderEngine/src/values.h"
+
+#include "RenderEngine/storage.h"
+#include "RenderEngine/configurator.h"
+#include "RenderEngine/renderer.h"
 
 #include <GLFW/glfw3.h>
 #include <math.h>
@@ -79,13 +82,25 @@ void run() {
 
     float i = 0;
 
+    RenderEngine::DrawCall drawCall1{};
+    drawCall1.meshId = 0;
+    drawCall1.position = {0, 0, 0};
+
+    RenderEngine::DrawCall drawCall2{};
+    drawCall2.meshId = 1;
+    drawCall2.position = {1, 1, 0};
+
     while (!isGameEnterupted()) {
         glfwPollEvents();
 
-        posses[0][2] = sin(i) - 1.0f;
         i += 0.01;
 
-        RenderEngine::drawFrame(ids, posses);
+        drawCall2.position[2] = sin(i) - 1.0f;
+
+        RenderEngine::addDrawCall(drawCall1);
+        RenderEngine::addDrawCall(drawCall2);
+
+        RenderEngine::drawFrame(ids);
     }
 }
 

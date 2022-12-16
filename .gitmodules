@@ -1,0 +1,3 @@
+[submodule "src/RenderEngine"]
+	path = src/RenderEngine
+	url = https://github.com/UndefFox/RenderEngine.git

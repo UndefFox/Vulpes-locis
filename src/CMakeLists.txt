@@ -1,4 +1,4 @@
-add_subdirectory(RenderEngine)
+add_subdirectory(libs/RenderEngine)
 
 add_executable(vulpeslocis main.cpp)
 

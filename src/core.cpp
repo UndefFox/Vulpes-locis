@@ -1,10 +1,10 @@
 #include "core.h"
 
-#include "RenderEngine/src/values.h"
+#include "libs/RenderEngine/src/values.h"
 
-#include "RenderEngine/storage.h"
-#include "RenderEngine/configurator.h"
-#include "RenderEngine/renderer.h"
+#include "libs/RenderEngine/storage.h"
+#include "libs/RenderEngine/configurator.h"
+#include "libs/RenderEngine/renderer.h"
 
 #include <GLFW/glfw3.h>
 #include <math.h>

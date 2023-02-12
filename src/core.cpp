@@ -5,6 +5,11 @@
 #include "libs/RenderEngine/storage.h"
 #include "libs/RenderEngine/configurator.h"
 #include "libs/RenderEngine/renderer.h"
+#include "ECS/ECS.h"
+
+#include "ECS/components/transformation.h"
+#include "ECS/components/renderdata.h"
+#include "ECS/components/physic.h"
 
 #include <GLFW/glfw3.h>
 #include <math.h>
@@ -63,7 +68,6 @@ void initializate() {
     settings.fragmentShaderFile = "shaders/fragment.spv";
 
     RenderEngine::configurateRender(settings);
-    RenderEngine::configurateRender(settings);
 
     RenderEngine::Mesh mesh{};
     mesh.vertices = vertices1;
@@ -80,25 +84,41 @@ void initializate() {
 
 void run() {
 
-    float i = 0;
+    Entity* first = new Entity{};
 
-    RenderEngine::DrawCall drawCall1{};
-    drawCall1.meshId = 0;
-    drawCall1.position = {0, 0, 0};
+    Transformation* trans1 = new Transformation{};
+    trans1->pos = { 1.0f, 0.0f, 0.3f };
+    
+    RenderData* render1 = new RenderData{};
+    render1->meshId = 0;
 
-    RenderEngine::DrawCall drawCall2{};
-    drawCall2.meshId = 1;
-    drawCall2.position = {1, 1, 0};
+    first->mask = 1 << 0;
+
+    first->components = {trans1, render1};
+
+    Entity* second = new Entity{};
+
+    Transformation* trans2 = new Transformation{};
+    trans2->pos = { -3.0f, 0.2f, -6.0f };
+    
+    RenderData* render2 = new RenderData{};
+    render2->meshId = 1;
+
+    Physic* phys2 = new Physic{};
+    phys2->gravity = -9.8f / 10000.0f;
+    phys2->velocity.z = 0.10f;
+
+    second->mask = (1 << 0) + (1 << 1);
+
+    second->components = {trans2, render2, phys2};
+
+    ECS::addEntity(first);
+    ECS::addEntity(second);
 
     while (!isGameEnterupted()) {
         glfwPollEvents();
 
-        i += 0.01;
-
-        drawCall2.position[2] = sin(i) - 1.0f;
-
-        RenderEngine::addDrawCall(drawCall1);
-        RenderEngine::addDrawCall(drawCall2);
+        ECS::execute();
 
         RenderEngine::drawFrame(ids);
     }

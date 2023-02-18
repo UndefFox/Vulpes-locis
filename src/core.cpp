@@ -88,29 +88,26 @@ void run() {
 
     Transformation* trans1 = new Transformation{};
     trans1->pos = { 1.0f, 0.0f, 0.3f };
-    
-    RenderData* render1 = new RenderData{};
-    render1->meshId = 0;
+    first->addComponent<Transformation>(trans1);
 
-    first->mask = 1 << 0;
-
-    first->components = {trans1, render1};
+    RenderData* rend1 = new RenderData{};
+    rend1->meshId = 0;
+    first->addComponent<RenderData>(rend1);
 
     Entity* second = new Entity{};
 
     Transformation* trans2 = new Transformation{};
     trans2->pos = { -3.0f, 0.2f, -6.0f };
-    
-    RenderData* render2 = new RenderData{};
-    render2->meshId = 1;
+    second->addComponent<Transformation>(trans2);
+
+    RenderData* rend2 = new RenderData{};
+    rend2->meshId = 0;
+    second->addComponent<RenderData>(rend2);
 
     Physic* phys2 = new Physic{};
     phys2->gravity = -9.8f / 10000.0f;
     phys2->velocity.z = 0.10f;
-
-    second->mask = (1 << 0) + (1 << 1);
-
-    second->components = {trans2, render2, phys2};
+    second->addComponent<Physic>(phys2);
 
     ECS::addEntity(first);
     ECS::addEntity(second);

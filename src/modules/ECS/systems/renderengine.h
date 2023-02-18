@@ -5,8 +5,6 @@
 #include "../components/renderdata.h"
 
 namespace RenderEngineSystem {
-    const int mask = 1 << 0;
-
     void execute(Transformation* transform, RenderData* renderData);
 }
 

@@ -1,12 +1,52 @@
 #ifndef H_ENTITY
 #define H_ENTITY
 
+#include "components/componentsHeaders.h"
+#include "systems/systemsheaders.h"
+
+#include <array>
 #include <vector>
 
-struct Entity {
+
+
+class Entity {
+
+
+public:
     int id;
-    int mask;
-    std::vector<void*> components;
+    int componentMask;
+    std::vector<void*> components = {};
+
+public:
+    static int counterId;
+
+    template <typename T>
+    static int getTypeId() {
+        static const int id = counterId++;
+
+        return id;
+    }
+
+
+public:
+
+    template <typename T>
+    void addComponent(T* newComponent = nullptr) {
+        if (!newComponent) {
+            newComponent = new T{};
+        }
+
+        componentMask |= (1 << getTypeId<T>());
+
+        if (components.size() < getTypeId<T>() + 1)
+            components.resize(getTypeId<T>() + 1);
+        components[getTypeId<T>()] = newComponent;
+    }
+
+    template <typename T>
+    T* getComponent() {
+        return (T*)components[getTypeId<T>()];
+    }
 };
 
 #endif

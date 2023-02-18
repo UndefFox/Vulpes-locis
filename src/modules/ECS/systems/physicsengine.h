@@ -6,8 +6,6 @@
 
 namespace PhysicsEngineSystem {
 
-    const int mask = 1 << 1;
-
     void execute(Transformation* transform, Physic* physics);
 
 }

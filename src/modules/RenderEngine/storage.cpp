@@ -18,6 +18,9 @@ int addMesh(Mesh& meshData) {
         vertices[i].pos[0] = meshData.vertices[i][0];
         vertices[i].pos[1] = meshData.vertices[i][1];
         vertices[i].pos[2] = meshData.vertices[i][2];
+
+        vertices[i].texCoord[0] = meshData.vertices[i][3];
+        vertices[i].texCoord[1] = meshData.vertices[i][4];
     }
 
     VkBuffer buffer;

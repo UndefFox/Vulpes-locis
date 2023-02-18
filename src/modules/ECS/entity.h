@@ -13,7 +13,6 @@ class Entity {
 
 
 public:
-    int id;
     int componentMask;
     std::vector<void*> components = {};
 

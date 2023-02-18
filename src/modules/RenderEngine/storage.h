@@ -8,7 +8,7 @@
 namespace RenderEngine {
 
 struct Mesh {
-    std::vector<std::array<float, 3>> vertices;
+    std::vector<std::array<float, 5>> vertices;
     std::vector<uint16_t> indexes;
 
 };

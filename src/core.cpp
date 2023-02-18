@@ -11,27 +11,31 @@
 #include "modules/ECS/components/renderdata.h"
 #include "modules/ECS/components/physic.h"
 
+#include "modules/FileManager/formaters/object.h"
+
+#include "converters/objectToMesh.h"
+
 #include <GLFW/glfw3.h>
 #include <math.h>
 #include <vector>
 #include <array>
 
-const std::vector<std::array<float, 3>> vertices1 = {
-    {-0.5f, -0.5f, 0.0f},
-    {0.5f, -0.5f, 0.0f},
-    {0.5f, 0.5f, 0.0f},
-    {-0.5f, 0.5f, 0.0f}
+const std::vector<std::array<float, 5>> vertices1 = {
+    {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f},
+    {0.5f, -0.5f, 0.0f, 0.0f, 1.0f},
+    {0.5f, 0.5f, 0.0f, 1.0f, 1.0f},
+    {-0.5f, 0.5f, 0.0f, 1.0f, 0.0f}
 };
 
 const std::vector<uint16_t> indices1 = {
     0, 1, 2, 2, 3, 0
 };
 
-const std::vector<std::array<float, 3>> vertices2 = {
-    {-0.5f, -0.5f, 1.0f},
-    {0.0f, -0.5f, 1.0f},
-    {0.0f, 0.0f, 1.0f},
-    {-0.5f, 0.0f, 1.0f}
+const std::vector<std::array<float, 5>> vertices2 = {
+    {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f},
+    {0.5f, -0.5f, 0.0f, 0.0f, 1.0f},
+    {0.5f, 0.5f, 0.0f, 1.0f, 1.0f},
+    {-0.5f, 0.5f, 0.0f, 1.0f, 0.0f}
 };
 
 const std::vector<uint16_t> indices2 = {
@@ -75,10 +79,15 @@ void initializate() {
 
     RenderEngine::addMesh(mesh);
 
-    mesh.vertices = vertices2;
-    mesh.indexes = indices2;
 
-    RenderEngine::addMesh(mesh);
+    
+
+
+    Object cube =  ObjectFormater::loadObjectFile("./objects/frame.obj");
+
+    RenderEngine::Mesh cubeMesh = ObjectToMesh::convert(cube);
+
+    RenderEngine::addMesh(cubeMesh);
 }
 
 
@@ -97,17 +106,17 @@ void run() {
     Entity* second = new Entity{};
 
     Transformation* trans2 = new Transformation{};
-    trans2->pos = { -3.0f, 0.2f, -6.0f };
+    trans2->pos = { -3.0f, 0.2f, -4.0f };
     second->addComponent<Transformation>(trans2);
 
     RenderData* rend2 = new RenderData{};
-    rend2->meshId = 0;
+    rend2->meshId = 1;
     second->addComponent<RenderData>(rend2);
 
     Physic* phys2 = new Physic{};
     phys2->gravity = -9.8f / 10000.0f;
     phys2->velocity.z = 0.10f;
-    second->addComponent<Physic>(phys2);
+    //second->addComponent<Physic>(phys2);
 
     ECS::addEntity(first);
     ECS::addEntity(second);

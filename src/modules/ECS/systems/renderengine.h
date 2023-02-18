@@ -1,8 +1,8 @@
 #ifndef H_RENDERENGINE_SYSTEM
 #define H_RENDERENGINE_SYSTEM
 
-#include "ECS/components/transformation.h"
-#include "ECS/components/renderdata.h"
+#include "../components/transformation.h"
+#include "../components/renderdata.h"
 
 namespace RenderEngineSystem {
     const int mask = 1 << 0;

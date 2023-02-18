@@ -2,8 +2,8 @@
 
 #include "entity.h"
 
-#include "systems/renderengine.h"
-#include "systems/physicsengine.h"
+#include "systems/systemsheaders.h"
+#include "components/componentsHeaders.h"
 
 #include <vector>
 #include <array>

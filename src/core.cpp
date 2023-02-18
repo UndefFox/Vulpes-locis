@@ -1,15 +1,15 @@
 #include "core.h"
 
-#include "libs/RenderEngine/src/values.h"
+#include "modules/RenderEngine/src/values.h"
 
-#include "libs/RenderEngine/storage.h"
-#include "libs/RenderEngine/configurator.h"
-#include "libs/RenderEngine/renderer.h"
-#include "ECS/ECS.h"
+#include "modules/RenderEngine/storage.h"
+#include "modules/RenderEngine/configurator.h"
+#include "modules/RenderEngine/renderer.h"
+#include "modules/ECS/ECS.h"
 
-#include "ECS/components/transformation.h"
-#include "ECS/components/renderdata.h"
-#include "ECS/components/physic.h"
+#include "modules/ECS/components/transformation.h"
+#include "modules/ECS/components/renderdata.h"
+#include "modules/ECS/components/physic.h"
 
 #include <GLFW/glfw3.h>
 #include <math.h>

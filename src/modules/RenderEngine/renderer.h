@@ -9,7 +9,7 @@ namespace RenderEngine {
 /**
  * Draws a new frame and displaying it on window.
  */
-void drawFrame(std::vector<int> IDs);
+void drawFrame();
 
 struct DrawCall {
     int meshId;

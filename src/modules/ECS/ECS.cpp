@@ -5,6 +5,8 @@
 #include "systems/systemsheaders.h"
 #include "components/componentsHeaders.h"
 
+#include "modules/RenderEngine/renderer.h"
+
 #include <vector>
 #include <array>
 
@@ -32,6 +34,8 @@ namespace ECS {
                     entity.getComponent<RenderData>()
                 );
             }
+            RenderEngine::drawFrame();
+            
 
             // PhysicalEngine
             const static int physicsEngineMask = (1 << Entity::getTypeId<Transformation>() | 1 << Entity::getTypeId<Physic>());
@@ -41,6 +45,8 @@ namespace ECS {
                     entity.getComponent<Physic>()
                 );
             }
+
+
 
             counter = 0;
         }

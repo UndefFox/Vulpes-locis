@@ -23,29 +23,12 @@
 const std::vector<std::array<float, 5>> vertices1 = {
     {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f},
     {0.5f, -0.5f, 0.0f, 0.0f, 1.0f},
-    {0.5f, 0.5f, 0.0f, 1.0f, 1.0f},
-    {-0.5f, 0.5f, 0.0f, 1.0f, 0.0f}
+    {-0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
+    {0.5f, 0.5f, 0.0f, 1.0f, 1.0f}
 };
 
 const std::vector<uint16_t> indices1 = {
-    0, 1, 2, 2, 3, 0
-};
-
-const std::vector<std::array<float, 5>> vertices2 = {
-    {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f},
-    {0.5f, -0.5f, 0.0f, 0.0f, 1.0f},
-    {0.5f, 0.5f, 0.0f, 1.0f, 1.0f},
-    {-0.5f, 0.5f, 0.0f, 1.0f, 0.0f}
-};
-
-const std::vector<uint16_t> indices2 = {
-    0, 1, 2, 2, 3, 0
-};
-
-std::vector<int> ids = {1, 0};
-std::vector<std::array<float, 3>> posses = {
-    {0.0f, 0.0f, -2.0f},
-    {1.0f, 0.0f, 0.0f}
+    0, 1, 2, 1, 2, 3
 };
 
 
@@ -83,7 +66,7 @@ void initializate() {
     
 
 
-    Object cube =  ObjectFormater::loadObjectFile("./objects/frame.obj");
+    Object cube =  ObjectFormater::loadObjectFile("./objects/monkey.obj");
 
     RenderEngine::Mesh cubeMesh = ObjectToMesh::convert(cube);
 
@@ -106,7 +89,7 @@ void run() {
     Entity* second = new Entity{};
 
     Transformation* trans2 = new Transformation{};
-    trans2->pos = { -3.0f, 0.2f, -4.0f };
+    trans2->pos = { 0.0f, 0.0f, 0.0f };
     second->addComponent<Transformation>(trans2);
 
     RenderData* rend2 = new RenderData{};
@@ -118,15 +101,13 @@ void run() {
     phys2->velocity.z = 0.10f;
     //second->addComponent<Physic>(phys2);
 
-    ECS::addEntity(first);
+    //ECS::addEntity(first);
     ECS::addEntity(second);
 
     while (!isGameEnterupted()) {
         glfwPollEvents();
 
         ECS::execute();
-
-        RenderEngine::drawFrame(ids);
     }
 }
 

@@ -634,10 +634,10 @@ void destroyDepthResources() {
 void createBuffers() {
     VkDeviceSize bufferSize;
 
-    bufferSize = sizeof(Vertex) * 1024;
+    bufferSize = sizeof(Vertex) * 100000;
     createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 
-    bufferSize = sizeof(uint16_t) * 1024;
+    bufferSize = sizeof(uint16_t) * 100000;
     createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 
     bufferSize = sizeof(UniformBufferObject);

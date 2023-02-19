@@ -167,7 +167,7 @@ void setPhysicalDevice(uint32_t deviceId) {
 
 
 void createDevice() {
-    const uint32_t INFOS_COUNT = 2;
+    const uint32_t INFOS_COUNT = 1;
     VkDeviceQueueCreateInfo queuesCreateInfo[INFOS_COUNT]{};
     chooseQueues(physcialDevice);
 

@@ -20,6 +20,10 @@ void initializate();
  */
 void run();
 
+/**
+ * Ending game life cycl and freeing resources. 
+ */
+void terminate();
 
 /**
  * Checks if the game must be shut down due to window close

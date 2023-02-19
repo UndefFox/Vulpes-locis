@@ -6,6 +6,9 @@
 
 namespace StringUtils {
 
+/**
+ * Splits string into parts separated by delimetr.
+ */
 std::vector<std::string> split(const std::string& str, char delimetr);
 
 }

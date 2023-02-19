@@ -17,11 +17,11 @@ public:
     std::vector<void*> components = {};
 
 public:
-    static int counterId;
+    static int typeIdCounter;
 
     template <typename T>
     static int getTypeId() {
-        static const int id = counterId++;
+        static const int id = typeIdCounter++;
 
         return id;
     }

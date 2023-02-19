@@ -6,6 +6,7 @@ int main() {
 
     Core::initializate();
     Core::run();
+    Core::terminate();
 
     return 0;
 }

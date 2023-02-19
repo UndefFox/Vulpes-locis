@@ -2,8 +2,8 @@
 
 namespace StringUtils {
 
-std::vector<std::string> split(const std::string& str, char delimetr) {
-    std::vector<std::string> output = {};
+std::vector<std::string> split(const std::string& str,const char delimetr) {
+    std::vector<std::string> output;
 
     int lastDelimetr = 0;
     for (int i = 0; i < str.size(); i++) {

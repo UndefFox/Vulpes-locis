@@ -5,44 +5,7 @@
 
 namespace RenderEngine {
 
-namespace {
-    bool renderConfigurated = false;
-
-    void destroyValues() {
-        destroySwapchain();
-        destroySyncObjects();
-        destroyCommandPool();
-        destroyDesriptorPool();
-        destroyBuffers();
-        destroyDepthResources();
-        destroyGraphicsPipeline();
-        destroyGraphicsPipelineLayout();
-        destroyRenderPass();
-        destroyDevice();
-        destroySurface();
-
-        vertexSavedAmount = 0;
-        indexSavedAmount = 0;
-        savedObjects.clear();
-        lastIndex = 0;
-
-        renderConfigurated = false;
-    }
-} // namespace <anonymous>
-
-void initializate() {
-    createVulkanInstance();
-}
-
-void terminate() {
-    destroyValues();
-}
-
 void configurateRender(RenderSettings& settings) {
-    if (renderConfigurated) {
-        destroyValues();
-    }
-
     setPhysicalDevice(settings.deviceId);
     window = settings.targetWindow;
     createSurface();
@@ -62,7 +25,34 @@ void configurateRender(RenderSettings& settings) {
     createDepthResources();
     createFramebuffers();
 
-    renderConfigurated = true;
+    
+}
+
+void deconfiguryRenderer() {
+    destroySwapchain();
+    destroySyncObjects();
+    destroyCommandPool();
+    destroyDesriptorPool();
+    destroyBuffers();
+    destroyDepthResources();
+    destroyGraphicsPipeline();
+    destroyGraphicsPipelineLayout();
+    destroyRenderPass();
+    destroyDevice();
+    destroySurface();
+
+    vertexSavedAmount = 0;
+    indexSavedAmount = 0;
+    savedObjects.clear();
+    lastIndex = 0;
+}
+
+void initializate() {
+    createVulkanInstance();
+}
+
+void terminate() {
+    destroyVulkanInstance();
 }
 
 std::vector<DeviceInfo> getAvailableDevices(GLFWwindow* window) {

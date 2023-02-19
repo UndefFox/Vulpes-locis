@@ -59,6 +59,12 @@ void terminate();
 void configurateRender(RenderSettings& settings);
 
 /**
+ * Deinitializating all render systems. If rendered is already configured, must be
+ * executed before calling configurateRender another time.
+ */
+void deconfiguryRenderer();
+
+/**
  * Returns all devices that can atleast run game.
  * 
  * @returns Array of all available devices.

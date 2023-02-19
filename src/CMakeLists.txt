@@ -1,15 +1,23 @@
-#Load libraries
+# Source code directories:
+include_directories(.)
+add_executable(vulpeslocis main.cpp)
+
+#Load modules:
 add_subdirectory(modules)
 add_subdirectory(converters)
 
-add_executable(vulpeslocis main.cpp)
 
+# Libriries:
+# Interfce libriries:
 add_library(core core.cpp)
-
 target_link_libraries(core PUBLIC
-    lib_RenderEngine
-    lib_ECS
+    module_RenderEngine
+    module_ECS
     lib_FileManager
     converters)
+
+
+
+
 
 target_link_libraries(vulpeslocis PUBLIC core)

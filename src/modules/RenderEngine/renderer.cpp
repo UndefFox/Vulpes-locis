@@ -9,7 +9,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstring>
-#include <chrono>
 
 namespace RenderEngine {
 
@@ -40,7 +39,7 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-    VkBuffer vertexBuffers[] = {  vertexBuffer};
+    VkBuffer vertexBuffers[] = { vertexBuffer };
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
@@ -60,7 +59,7 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     scissor.extent = swapchainExtent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,   pipelineLayout, 0, 1, &  descriptorSet, 0, nullptr);
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 
     ObjectConstant constant{};
     for (DrawCall drawCall : drawCalls) {
@@ -76,37 +75,19 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     vkEndCommandBuffer(commandBuffer);
 }
 
-void updateUniformBuffer() {
-    static auto startTime = std::chrono::high_resolution_clock::now();
 
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
-    UniformBufferObject ubo{};
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), time *  glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 proj = glm::perspective(glm::radians(70.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f);
-    proj[1][1] *= -1;
-
-    ubo.model = proj * view * model;
-
-    void* data;
-    vkMapMemory(logicalDevice, uniformBufferMemory, 0, sizeof(ubo), 0, &data);
-        memcpy(data, &ubo, sizeof(ubo));
-    vkUnmapMemory(logicalDevice, uniformBufferMemory);
-}
 
 } // namespace <anonimous>
 
 
 void drawFrame() {
-    vkWaitForFences( logicalDevice, 1, & inFlightFence, VK_TRUE, UINT64_MAX);
+    vkWaitForFences(logicalDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
-    VkResult result = vkAcquireNextImageKHR(  logicalDevice,   swapchainKHR, UINT64_MAX,   imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(logicalDevice, swapchainKHR, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-        vkDeviceWaitIdle( logicalDevice);
+        vkDeviceWaitIdle(logicalDevice);
 
          destroyDepthResources();
          destroySwapchain();
@@ -117,13 +98,11 @@ void drawFrame() {
         return;
     }
 
-    vkResetFences(logicalDevice, 1, &  inFlightFence);
+    vkResetFences(logicalDevice, 1, &inFlightFence);
 
     vkResetCommandBuffer(commandBuffer, 0);
 
     recordCommandBuffer(commandBuffer, imageIndex);
-
-    updateUniformBuffer();
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -172,4 +151,20 @@ void addDrawCall(DrawCall drawCall) {
     drawCalls.push_back(drawCall);
 }
     
+void setCamera(std::array<float, 3> pos, std::array<float, 3> rotation) {
+    // TODO: make that view will look in camera direction
+    UniformBufferObject ubo{};
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 view = glm::lookAt(glm::vec3(pos[0], pos[1], pos[2]), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 proj = glm::perspective(glm::radians(70.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f);
+    proj[1][1] *= -1;
+
+    ubo.model = proj * view * model;
+
+    void* data;
+    vkMapMemory(logicalDevice, uniformBufferMemory, 0, sizeof(ubo), 0, &data);
+        memcpy(data, &ubo, sizeof(ubo));
+    vkUnmapMemory(logicalDevice, uniformBufferMemory);
+}
+
 } // namespace RenderEngine

@@ -16,22 +16,7 @@
 #include "converters/objectToMesh.h"
 
 #include <GLFW/glfw3.h>
-#include <math.h>
 #include <vector>
-#include <array>
-
-const std::vector<std::array<float, 8>> vertices1 = {
-    {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f},
-    {0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
-    {-0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f},
-    {0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f}
-};
-
-const std::vector<uint16_t> indices1 = {
-    0, 1, 2, 1, 2, 3
-};
-
-
 
 namespace Core {
 
@@ -42,7 +27,6 @@ void initializate() {
 
     RenderEngine::initializate();
    
-
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     window = glfwCreateWindow(430, 200, "Vulpes locis", nullptr, nullptr);
 
@@ -56,59 +40,51 @@ void initializate() {
 
     RenderEngine::configurateRender(settings);
 
-    RenderEngine::Mesh mesh{};
-    mesh.vertices = vertices1;
-    mesh.indexes = indices1;
 
-    RenderEngine::addMesh(mesh);
+// Demonstration setup:
 
+    Object monkey =  ObjectFormater::loadObjectFile("./resources/models/monkey.obj");
 
-    
+    RenderEngine::Mesh monkeyMesh = ObjectToMesh::convert(monkey);
 
-
-    Object cube =  ObjectFormater::loadObjectFile("./objects/monkey.obj");
-
-    RenderEngine::Mesh cubeMesh = ObjectToMesh::convert(cube);
-
-    RenderEngine::addMesh(cubeMesh);
-}
-
-
-void run() {
+    RenderEngine::addMesh(monkeyMesh);
 
     Entity* first = new Entity{};
 
     Transformation* trans1 = new Transformation{};
-    trans1->pos = { 1.0f, 0.0f, 0.3f };
+    trans1->pos = { 0.0f, 0.0f, 0.0f };
     first->addComponent<Transformation>(trans1);
 
     RenderData* rend1 = new RenderData{};
     rend1->meshId = 0;
     first->addComponent<RenderData>(rend1);
 
-    Entity* second = new Entity{};
+    Physic* phys1 = new Physic{};
+    phys1->gravity = -9.8f / 10000.0f;
+    phys1->velocity.z = 0.10f;
+    //first->addComponent<Physic>(phys1);
 
-    Transformation* trans2 = new Transformation{};
-    trans2->pos = { 0.0f, 0.0f, 0.0f };
-    second->addComponent<Transformation>(trans2);
+    ECS::addEntity(first);
 
-    RenderData* rend2 = new RenderData{};
-    rend2->meshId = 1;
-    second->addComponent<RenderData>(rend2);
+    RenderEngine::setCamera({2, 2, 2}, {});
+}
 
-    Physic* phys2 = new Physic{};
-    phys2->gravity = -9.8f / 10000.0f;
-    phys2->velocity.z = 0.10f;
-    //second->addComponent<Physic>(phys2);
 
-    //ECS::addEntity(first);
-    ECS::addEntity(second);
-
+void run() {
     while (!isGameEnterupted()) {
         glfwPollEvents();
 
         ECS::execute();
     }
+}
+
+void terminate() {
+    RenderEngine::deconfiguryRenderer();
+    RenderEngine::terminate();
+
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
 }
 
 bool isGameEnterupted() {

@@ -1,18 +1,9 @@
 #ifndef H_RENDERENGINE_STORAGE
 #define H_RENDERENGINE_STORAGE
 
-#include <array>
-#include <vector>
-#include <cstdint>
+#include "mesh.h"
 
 namespace RenderEngine {
-
-struct Mesh {
-    std::vector<std::array<float, 8>> vertices;
-    std::vector<uint16_t> indexes;
-
-};
-
 
 /**
  * Adding mesh to memory and returnng it's ID.

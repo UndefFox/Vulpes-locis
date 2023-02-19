@@ -1,3 +1,3 @@
 #include "entity.h"
 
-int Entity::counterId = 0;
+int Entity::typeIdCounter = 0;

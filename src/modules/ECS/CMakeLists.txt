@@ -1,14 +1,25 @@
-add_library(lib_ECS ECS.cpp)
-add_library(entity entity.cpp)
-
-# Systems:
+# Libriries:
+# Systems libriries:
 add_library(sysPhysicsEngine systems/physicsengine.cpp)
 
 add_library(sysRenderEngine systems/renderengine.cpp)
 target_link_libraries(sysRenderEngine PUBLIC
-    lib_RenderEngine)
+    module_RenderEngine)
 
-target_link_libraries(lib_ECS PUBLIC
+# Interface libriries:
+add_library(entity entity.cpp)
+
+add_library(ECS ECS.cpp)
+
+
+
+
+add_library(module_ECS INTERFACE)
+target_link_libraries(module_ECS INTERFACE
+    ECS
     entity
     sysPhysicsEngine
     sysRenderEngine)
+
+
+

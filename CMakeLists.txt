@@ -2,23 +2,20 @@ cmake_minimum_required(VERSION 3.24.1)
 
 project(vulpeslocis)
 
-set(CMKAE_CXX_STANDART 11)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+# Global variable setup:
+set(CMKAE_CXX_STANDART 17)
 set(CMAKE_BUILD_PARALLEL_LEVEL 6)
-set(CMAKE_BUILD_TYPE DEBUG)
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_BUILD_TYPE DEBUG)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 
-set(PROJECT_NAME vulpeslocis)
-set(SHADERS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/shaders)
-
-include_directories(./src)
+# Scripts:
+include(cmakescripts/directoryLayoutSetup.txt)
+include(cmakescripts/copyResources.txt)
 
 add_subdirectory(src)
-add_subdirectory(shaders)
 
 add_custom_target(Documentation ALL
     doxygen Doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/textures/texture.jpg
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/textures/texture.jpg)

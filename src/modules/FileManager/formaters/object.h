@@ -8,6 +8,16 @@
 
 namespace ObjectFormater {
 
+/**
+ * Loads data from obj file.
+ * 
+ * Supports:
+ *  'v' - vertices positions
+ *  'vn' - normals
+ *  'vt' - texture coradinates
+ * 
+ *  'f' - only v/vn/vt format
+ */
 Object loadObjectFile(std::string filename);
 
 }

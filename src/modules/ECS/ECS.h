@@ -5,9 +5,14 @@
 
 namespace ECS {
 
+    /**
+     * Adds entity to system.
+     */
     void addEntity(Entity* entity);
 
-
+    /**
+     * Procceds all entityes to systems.
+     */
     void execute();
 
 }

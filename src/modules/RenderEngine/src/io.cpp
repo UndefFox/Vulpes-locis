@@ -14,6 +14,6 @@ void loadShaderFile(std::string filename, std::vector<char>& code) {
     file.read(code.data(), fileSize);
 
     file.close();
-} // namespace RenderEngine
+} 
 
-}
+} // namespace RenderEngine

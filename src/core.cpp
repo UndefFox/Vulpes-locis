@@ -20,11 +20,11 @@
 #include <vector>
 #include <array>
 
-const std::vector<std::array<float, 5>> vertices1 = {
-    {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f},
-    {0.5f, -0.5f, 0.0f, 0.0f, 1.0f},
-    {-0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
-    {0.5f, 0.5f, 0.0f, 1.0f, 1.0f}
+const std::vector<std::array<float, 8>> vertices1 = {
+    {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f},
+    {0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
+    {-0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f},
+    {0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f}
 };
 
 const std::vector<uint16_t> indices1 = {

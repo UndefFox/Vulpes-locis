@@ -9,7 +9,7 @@ namespace RenderEngine {
 
 struct Vertex {
     alignas(16) glm::vec3 pos;
-    alignas(16) glm::vec3 color;
+    alignas(16) glm::vec3 normal;
     alignas(16) glm::vec2 texCoord;
 };
 

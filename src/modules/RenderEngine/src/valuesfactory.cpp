@@ -487,7 +487,7 @@ void createGraphicsPipeline(std::string vertexShader, std::string fragmentShader
     attributeDescriptions[1].binding = 0;
     attributeDescriptions[1].location = 1;
     attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-    attributeDescriptions[1].offset = offsetof(Vertex, Vertex::color);
+    attributeDescriptions[1].offset = offsetof(Vertex, Vertex::normal);
 
     attributeDescriptions[2].binding = 0;
     attributeDescriptions[2].location = 2;
@@ -496,8 +496,8 @@ void createGraphicsPipeline(std::string vertexShader, std::string fragmentShader
 
 
     vertexInputInfo.vertexBindingDescriptionCount = 1;
-    vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
     vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+    vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
     vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
     VkPipelineInputAssemblyStateCreateInfo inputAssembly{};

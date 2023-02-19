@@ -21,6 +21,10 @@ int addMesh(Mesh& meshData) {
 
         vertices[i].texCoord[0] = meshData.vertices[i][3];
         vertices[i].texCoord[1] = meshData.vertices[i][4];
+
+        vertices[i].normal[0] = meshData.vertices[i][5];
+        vertices[i].normal[1] = meshData.vertices[i][6];
+        vertices[i].normal[2] = meshData.vertices[i][7];
     }
 
     VkBuffer buffer;

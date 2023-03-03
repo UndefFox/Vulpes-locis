@@ -1,8 +1,8 @@
 #ifndef H_CONVERTER_OBJECTTOMESH
 #define H_CONVERTER_OBJECTTOMESH
 
-#include "modules/RenderEngine/mesh.h"
-#include "modules/FileManager/formats/object.h"
+#include "RenderEngine/mesh.h"
+#include "FileManager/object.h"
 
 namespace ObjectToMesh {
 

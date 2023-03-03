@@ -3,9 +3,12 @@ include_directories(.)
 add_executable(vulpeslocis main.cpp)
 
 #Load modules:
-add_subdirectory(modules)
 add_subdirectory(converters)
-
+add_subdirectory(shaders)
+add_subdirectory(ECS)
+add_subdirectory(RenderEngine)
+add_subdirectory(FileManager)
+add_subdirectory(StringUtils)
 
 # Libriries:
 # Interfce libriries:

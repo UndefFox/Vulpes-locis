@@ -1,6 +1,3 @@
-# Shader compilation:
-add_subdirectory(shaders)
-
 # Libriries:
 # Source libriries:
 

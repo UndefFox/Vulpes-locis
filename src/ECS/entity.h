@@ -1,9 +1,6 @@
 #ifndef H_ENTITY
 #define H_ENTITY
 
-#include "components/componentsHeaders.h"
-#include "systems/systemsheaders.h"
-
 #include <array>
 #include <vector>
 

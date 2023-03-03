@@ -79,7 +79,6 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 
 } // namespace <anonimous>
 
-
 void drawFrame() {
     vkWaitForFences(logicalDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 
@@ -89,11 +88,11 @@ void drawFrame() {
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         vkDeviceWaitIdle(logicalDevice);
 
-         destroyDepthResources();
-         destroySwapchain();
-         createSwapchain();
-         createDepthResources();
-         createFramebuffers();
+        destroyDepthResources();
+        destroySwapchain();
+        createSwapchain();
+        createDepthResources();
+        createFramebuffers();
 
         return;
     }

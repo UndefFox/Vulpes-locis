@@ -1,17 +1,17 @@
 #include "core.h"
 
-#include "modules/RenderEngine/src/values.h"
+#include "RenderEngine/src/values.h"
 
-#include "modules/RenderEngine/storage.h"
-#include "modules/RenderEngine/configurator.h"
-#include "modules/RenderEngine/renderer.h"
-#include "modules/ECS/ECS.h"
+#include "RenderEngine/storage.h"
+#include "RenderEngine/configurator.h"
+#include "RenderEngine/renderer.h"
+#include "ECS/ECS.h"
 
-#include "modules/ECS/components/transformation.h"
-#include "modules/ECS/components/renderdata.h"
-#include "modules/ECS/components/physic.h"
+#include "ECS/components/transformation.h"
+#include "ECS/components/renderdata.h"
+#include "ECS/components/physic.h"
 
-#include "modules/FileManager/formaters/object.h"
+#include "FileManager/fileLoaders.h"
 
 #include "converters/objectToMesh.h"
 

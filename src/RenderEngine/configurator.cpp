@@ -1,6 +1,7 @@
 #include "configurator.h"
 
 #include "src/valuesfactory.h"
+#include "src/values.h"
 
 
 namespace RenderEngine {
@@ -29,6 +30,8 @@ void configurateRender(RenderSettings& settings) {
 }
 
 void deconfiguryRenderer() {
+    vkDeviceWaitIdle(logicalDevice);
+
     destroySwapchain();
     destroySyncObjects();
     destroyCommandPool();

@@ -1,5 +1,5 @@
 # Copying all resources to build directory.
 
 # Objects:
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources/models/monkey.obj
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/models/monkey.obj
     DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/models)

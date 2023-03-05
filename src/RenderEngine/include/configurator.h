@@ -1,44 +1,40 @@
 #ifndef H_RENDERENGINE_CONFIGURATOR
 #define H_RENDERENGINE_CONFIGURATOR
 
-#include <string>
 #include <vector>
-#include <vulkan/vulkan.h>
+
 #include <GLFW/glfw3.h>
 
 #include "RenderEngine/include/types/configuration.h"
+#include "RenderEngine/include/types/deviceInfo.h"
 
 namespace RenderEngine {
 
-/**
- * Info about graphical device.
- */
-struct DeviceInfo {
-    /**
-     * Uniqiue id that device have.
-     */
-    uint32_t deviceId;
 
-    /**
-     * Offical device name.
-     */
-    std::string deviceName;
-};
 
 /**
- * Innitializing all components of library for work. Must be run 
- * before anything else.
+ * Initializing module. Before calling glfwInit() must be executed.
+ * Must be run once before usage. 
  */
 void initializate();
     
 /**
- * Terminating all components and freeing all resources memory.
+ * Terminating module. Must be run after ending usage.
  */
 void terminate();
 
+/**
+ * Returns all devices that can work with the given window.
+ * 
+ * @returns Array of all available devices.
+ */
+std::vector<DeviceInfo> getDevicesSuportedWindow(GLFWwindow* window);
+
+
 
 /**
- * Configuring rendder acording to settings. 
+ * Configuring rendder acording to settings. If render were already configurated, deconfiguryRender must be
+ * called before executing again.
  * 
  * @param settings Settings for wich render engine will be configurated.
  */
@@ -50,12 +46,7 @@ void configurateRender(Configuration& settings);
  */
 void deconfiguryRenderer();
 
-/**
- * Returns all devices that can atleast run game.
- * 
- * @returns Array of all available devices.
- */
-std::vector<DeviceInfo> getAvailableDevices(GLFWwindow* window);
+
 
 
 } // namespace RenderEngine

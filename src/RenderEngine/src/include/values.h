@@ -2,7 +2,7 @@
 #define H_RENDERENGINE_VALUES
 
 #include <vulkan/vulkan.h>
-#include <GLFW/glfw3.h>
+#include <array>
 #include <vector>
 
 
@@ -10,7 +10,6 @@ namespace RenderEngine {
 
 extern VkInstance vulkanInstance;
 extern VkSurfaceKHR surfaceKHR;
-extern GLFWwindow* window;
 extern VkPhysicalDevice physcialDevice;
 extern VkDevice logicalDevice;
 extern VkRenderPass renderPass;
@@ -31,10 +30,13 @@ extern VkDescriptorPool descriptorPool;
 extern VkDescriptorSet descriptorSet;
 
 // Queue variable
-extern uint32_t graphicFamilyIndex;
-extern uint32_t presentationFamilyIndex;
-extern VkQueue graphicsQueue;
-extern VkQueue presentQueue;
+#define QUEUE_COUNT 2
+
+#define GRAPHICS_QUEUE 0
+#define PRESENTATION_QUEUE 1
+
+extern std::array<int, QUEUE_COUNT> queuesFamiliesIndexes;
+extern std::array<VkQueue, QUEUE_COUNT> queues;
     
 // Swapchain details
 extern VkSurfaceFormatKHR swapchainFormat;

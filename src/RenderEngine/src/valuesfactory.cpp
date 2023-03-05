@@ -15,6 +15,8 @@
 
 namespace RenderEngine {
 
+Configuration currentConfiguration{};
+
 namespace {
 
 bool chooseQueues(VkPhysicalDevice& device, VkSurfaceKHR testSurface = surfaceKHR) {
@@ -29,7 +31,7 @@ bool chooseQueues(VkPhysicalDevice& device, VkSurfaceKHR testSurface = surfaceKH
 
     for (uint32_t i = 0; i < queueFamilyCount; i++) {
         if (!graphicFinded && (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)) {
-            graphicFamilyIndex = i;
+            queuesFamiliesIndexes[GRAPHICS_QUEUE] = i;
 
             graphicFinded = true;
         }
@@ -38,7 +40,7 @@ bool chooseQueues(VkPhysicalDevice& device, VkSurfaceKHR testSurface = surfaceKH
         vkGetPhysicalDeviceSurfaceSupportKHR(device, i, testSurface, &supportPresentationCheck);
 
         if (!presentationFinded && supportPresentationCheck) {
-            presentationFamilyIndex = i;
+            queuesFamiliesIndexes[PRESENTATION_QUEUE] = i;
 
             presentationFinded = true;
         }
@@ -92,7 +94,7 @@ void destroyVulkanInstance() {
 
 
 void createSurface() {
-    glfwCreateWindowSurface(vulkanInstance, window, nullptr, &surfaceKHR);
+    glfwCreateWindowSurface(vulkanInstance, currentConfiguration.window, nullptr, &surfaceKHR);
 }
 
 void destroySurface() {
@@ -156,12 +158,12 @@ bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device, VkSurfaceKHR testSurfac
 }
 
 
-void setPhysicalDevice(uint32_t deviceId) {
+void setPhysicalDevice() {
     for (VkPhysicalDevice device : getAvailablePhysicalDevices()) {
         VkPhysicalDeviceProperties properties{};
         vkGetPhysicalDeviceProperties(device, &properties);
 
-        if (deviceId == properties.deviceID) {
+        if (currentConfiguration.deviceId == properties.deviceID) {
             physcialDevice = device;
         }
     }
@@ -169,23 +171,36 @@ void setPhysicalDevice(uint32_t deviceId) {
 
 
 void createDevice() {
-    const uint32_t INFOS_COUNT = 1;
-    VkDeviceQueueCreateInfo queuesCreateInfo[INFOS_COUNT]{};
+    
     chooseQueues(physcialDevice);
 
-    queuesCreateInfo[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queuesCreateInfo[0].queueFamilyIndex = graphicFamilyIndex;
-    queuesCreateInfo[0].queueCount = 2;
-    const float queuePriorities1[] = {1.0f, 1.0f};
-    queuesCreateInfo[0].pQueuePriorities = queuePriorities1;
+    std::vector<int> queueCountForEachFamily{};
+    for (int i = 0; i < queuesFamiliesIndexes.size(); i++) {
+        if (queueCountForEachFamily.size() < queuesFamiliesIndexes[i] + 1) {
+            queueCountForEachFamily.resize(queuesFamiliesIndexes[i] + 1);
+        }
 
-    // TODO: update create device func so queueCreateInfo want have same graphicFamilyIndex
+        queueCountForEachFamily[queuesFamiliesIndexes[i]]++;
+    }
 
-    // queuesCreateInfo[1].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    // queuesCreateInfo[1].queueFamilyIndex = presentationFamilyIndex;
-    // queuesCreateInfo[1].queueCount = 1;
-    // const float queuePriorities2[] = {1.0f};
-    // queuesCreateInfo[1].pQueuePriorities = queuePriorities2;
+    std::array<float, QUEUE_COUNT> priorities = { 1.0f, 1.0f };
+    std::vector<VkDeviceQueueCreateInfo> queuesCreateInfo{};
+
+    for (int i = 0; i < queueCountForEachFamily.size(); i++) {
+
+        if (!queueCountForEachFamily[i]) {
+            continue;
+        }
+
+        VkDeviceQueueCreateInfo deviceQueueCreateInfo{};
+
+        deviceQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        deviceQueueCreateInfo.queueFamilyIndex = i;
+        deviceQueueCreateInfo.queueCount = queueCountForEachFamily[i];
+        deviceQueueCreateInfo.pQueuePriorities = priorities.data();
+
+        queuesCreateInfo.push_back(deviceQueueCreateInfo);
+    }
 
     VkPhysicalDeviceFeatures deviceFeatures{};
     deviceFeatures.samplerAnisotropy = VK_TRUE;
@@ -196,8 +211,8 @@ void createDevice() {
 
     VkDeviceCreateInfo deviceCreateInfo{};
     deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    deviceCreateInfo.pQueueCreateInfos = queuesCreateInfo;
-    deviceCreateInfo.queueCreateInfoCount = INFOS_COUNT;
+    deviceCreateInfo.pQueueCreateInfos = queuesCreateInfo.data();
+    deviceCreateInfo.queueCreateInfoCount = queuesCreateInfo.size();
     deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
     deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();
     deviceCreateInfo.enabledExtensionCount = requiredDeviceExtensions.size();
@@ -206,8 +221,12 @@ void createDevice() {
     
     vkCreateDevice(physcialDevice, &deviceCreateInfo, nullptr, &logicalDevice);
 
-    vkGetDeviceQueue(logicalDevice, graphicFamilyIndex, 0, &graphicsQueue);
-    vkGetDeviceQueue(logicalDevice, presentationFamilyIndex, 1, &presentQueue);
+    std::vector<int> familyQueueCount(queueCountForEachFamily.size());
+
+    for (int i = 0; i < QUEUE_COUNT; i++) {
+        vkGetDeviceQueue(logicalDevice, queuesFamiliesIndexes[i], familyQueueCount[queuesFamiliesIndexes[i]]++, &queues[i]);
+    }
+
 }
 
 void destroyDevice() {
@@ -257,7 +276,7 @@ void createSwapchain() {
         swapchainCreateInfo.imageExtent = capabilities.currentExtent;
     } else {
         int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
+        glfwGetFramebufferSize(currentConfiguration.window, &width, &height);
 
         VkExtent2D actualExtent = {
             static_cast<uint32_t>(width),
@@ -273,12 +292,18 @@ void createSwapchain() {
     swapchainExtent = swapchainCreateInfo.imageExtent;
 
     // Queues setup
-    uint32_t queueFamilyIndices[] = {graphicFamilyIndex, presentationFamilyIndex};
+    std::set<int> usedQueuesFamiliesIndexes;
+    for (int i = 0; i < QUEUE_COUNT; i++) {
+        usedQueuesFamiliesIndexes.insert(queuesFamiliesIndexes[i]);
+    }
 
-    if (graphicFamilyIndex != presentationFamilyIndex) {
+
+    std::vector<uint32_t> queueFamiliesIndexes(usedQueuesFamiliesIndexes.size());
+    std::copy(usedQueuesFamiliesIndexes.begin(), usedQueuesFamiliesIndexes.end(), std::back_inserter(queueFamiliesIndexes));
+    if (queueFamiliesIndexes.size() != 1) {
         swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-        swapchainCreateInfo.queueFamilyIndexCount = 2;
-        swapchainCreateInfo.pQueueFamilyIndices = queueFamilyIndices;
+        swapchainCreateInfo.queueFamilyIndexCount = queueFamiliesIndexes.size();
+        swapchainCreateInfo.pQueueFamilyIndices = queueFamiliesIndexes.data();
     } else {
         swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
         swapchainCreateInfo.queueFamilyIndexCount = 0;
@@ -444,12 +469,12 @@ void destroyGraphicsPipelineLayout() {
 }
 
 
-void createGraphicsPipeline(std::string vertexShader, std::string fragmentShader) {
+void createGraphicsPipeline() {
     std::vector<char> vertShader;
     std::vector<char> fragShader;
 
-    loadShaderFile(vertexShader, vertShader);
-    loadShaderFile(fragmentShader, fragShader);
+    loadShaderFile(currentConfiguration.verticesShaderPath, vertShader);
+    loadShaderFile(currentConfiguration.fragmentShaderPath, fragShader);
 
     VkShaderModule vertModule{};
     VkShaderModule fragModule{};
@@ -592,7 +617,7 @@ void createCommandPool() {
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    poolInfo.queueFamilyIndex = graphicFamilyIndex;
+    poolInfo.queueFamilyIndex = queuesFamiliesIndexes[GRAPHICS_QUEUE];
 
     vkCreateCommandPool(logicalDevice, &poolInfo, nullptr, &commandPool);
 }
@@ -636,10 +661,10 @@ void destroyDepthResources() {
 void createBuffers() {
     VkDeviceSize bufferSize;
 
-    bufferSize = sizeof(Vertex) * 100000;
+    bufferSize = (currentConfiguration.memoryAmount / sizeof(Vertex)) / 2 * sizeof(Vertex);
     createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 
-    bufferSize = sizeof(uint16_t) * 100000;
+    bufferSize = (currentConfiguration.memoryAmount / sizeof(uint16_t)) / 2 * sizeof(uint16_t);
     createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 
     bufferSize = sizeof(UniformBufferObject);

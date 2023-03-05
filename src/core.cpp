@@ -1,5 +1,3 @@
-#include "core.h"
-
 #include "RenderEngine/include/configurator.h"
 #include "RenderEngine/include/renderer.h"
 #include "RenderEngine/include/storage.h"
@@ -12,6 +10,8 @@
 #include "fileLoaders.h"
 
 #include "typeConverters.h"
+
+#include "core.h"
 
 #define RENDERTEST_SETUP_ON
 
@@ -35,20 +35,24 @@ void initializate() {
 void setupInitialState() {
     #ifdef RENDERTEST_SETUP_ON
     // Test setup
+
+    RenderEngine::Configuration renderConf{};
+
+    // TODO: make class for window handling.
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     window = glfwCreateWindow(430, 200, "Vulpes locis", nullptr, nullptr);
 
-    std::vector<RenderEngine::DeviceInfo> infos = RenderEngine::getAvailableDevices(window);
+    std::vector<RenderEngine::DeviceInfo> infos = RenderEngine::getDevicesSuportedWindow(window);
+    
+    renderConf.deviceId = infos[0].deviceId;
+    renderConf.window = window;
+    renderConf.verticesShaderPath = "shaders/vertical.spv";
+    renderConf.fragmentShaderPath = "shaders/fragment.spv";
+    renderConf.memoryAmount = 1024 * 1024;
 
-    RenderEngine::Configuration settings{};
-    settings.deviceId = infos[0].deviceId;
-    settings.window = window;
-    settings.verticesShaderPath = "shaders/vertical.spv";
-    settings.fragmentShaderPath = "shaders/fragment.spv";
+    RenderEngine::configurateRender(renderConf);
 
-    RenderEngine::configurateRender(settings);
-
-    Object monkey =  FileLoaders::loadObjectFile("./resources/models/fox.obj");
+    Object monkey = FileLoaders::loadObjectFile("./resources/models/fox.obj");
 
     RenderEngine::Mesh monkeyMesh = TypeConverters::objectToMesh(monkey);
 

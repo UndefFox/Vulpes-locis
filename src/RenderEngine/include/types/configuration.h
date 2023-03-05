@@ -17,6 +17,8 @@ struct Configuration {
      */
     int deviceId;
 
+    
+    size_t memoryAmount;
 
     /**
      * Path to vertices spv shader file.

@@ -6,7 +6,14 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
+#include "RenderEngine/include/types/configuration.h"
+
 namespace RenderEngine {
+
+/**
+ * Configuration that used when creating values. 
+ */
+extern Configuration currentConfiguration;
 
 void createVulkanInstance();
 void destroyVulkanInstance();
@@ -38,7 +45,7 @@ std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
 bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device, VkSurfaceKHR testSurface);
 
 
-void setPhysicalDevice(uint32_t deviceId);
+void setPhysicalDevice();
 
 
 void createDevice();
@@ -59,7 +66,7 @@ void createDescriptorSetLayout();
 void createGraphicsPipelineLayout();
 void destroyGraphicsPipelineLayout();
 
-void createGraphicsPipeline(std::string vertexShader, std::string fragmentShader);
+void createGraphicsPipeline();
 void destroyGraphicsPipeline();
 
 void createCommandPool();

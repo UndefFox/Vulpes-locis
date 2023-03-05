@@ -1,10 +1,11 @@
 #include "RenderEngine/src/include/values.h"
 
+
+
 namespace RenderEngine {
 
 VkInstance vulkanInstance;
 VkSurfaceKHR surfaceKHR;
-GLFWwindow* window;
 VkPhysicalDevice physcialDevice;
 VkDevice logicalDevice;
 VkRenderPass renderPass;
@@ -25,10 +26,8 @@ VkDescriptorPool descriptorPool;
 VkDescriptorSet descriptorSet;
 
 // Queue variable
-uint32_t graphicFamilyIndex;
-uint32_t presentationFamilyIndex;
-VkQueue graphicsQueue;
-VkQueue presentQueue;
+std::array<int, QUEUE_COUNT> queuesFamiliesIndexes{};
+std::array<VkQueue, QUEUE_COUNT> queues{};
     
 // Swapchain details
 VkSurfaceFormatKHR swapchainFormat;

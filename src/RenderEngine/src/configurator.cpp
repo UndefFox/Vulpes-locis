@@ -1,21 +1,30 @@
-#include "RenderEngine/include/configurator.h"
+#include <vulkan/vulkan.h>
+#include <GLFW/glfw3.h>
 
 #include "RenderEngine/src/include/valuesfactory.h"
 #include "RenderEngine/src/include/values.h"
 
+#include "RenderEngine/include/types/configuration.h"
+
+
+
+#include "RenderEngine/include/configurator.h"
+
+
 
 namespace RenderEngine {
 
-void configurateRender(Configuration& settings) {
-    setPhysicalDevice(settings.deviceId);
-    window = settings.window;
+void configurateRender(Configuration& configuration) {
+    currentConfiguration = configuration;
+
+    setPhysicalDevice();
     createSurface();
     createDevice();
     updateSwapchainConfiguration();
     createRenderPass();
     createDescriptorSetLayout();
     createGraphicsPipelineLayout();
-    createGraphicsPipeline(settings.verticesShaderPath, settings.fragmentShaderPath);
+    createGraphicsPipeline();
     createCommandPool();
     createCommandBuffer();
     createBuffers();
@@ -56,19 +65,23 @@ void terminate() {
     destroyVulkanInstance();
 }
 
-std::vector<DeviceInfo> getAvailableDevices(GLFWwindow* window) {
+std::vector<DeviceInfo> getDevicesSuportedWindow(GLFWwindow* window) {
+
+    std::vector<DeviceInfo> infos{};
 
     VkSurfaceKHR testSurface;
-    glfwCreateWindowSurface(vulkanInstance, window, nullptr, &testSurface);
+    if (glfwCreateWindowSurface(vulkanInstance, window, nullptr, &testSurface) != VK_SUCCESS){
+        return infos;
+    }
 
-    std::vector<VkPhysicalDevice> devices =  getAvailablePhysicalDevices();
-    std::vector<DeviceInfo> infos{};
+    std::vector<VkPhysicalDevice> devices = getAvailablePhysicalDevices();
+    
     for (int i = 0; i < devices.size(); i++) {
         if (minimuPhysicalDeviceCheck(devices[i], testSurface)) {
             infos.push_back({});
 
             VkPhysicalDeviceProperties properties{};
-            vkGetPhysicalDeviceProperties(devices.back(), &properties);
+            vkGetPhysicalDeviceProperties(devices[i], &properties);
             
             infos.back().deviceId = properties.deviceID;
             infos.back().deviceName = properties.deviceName;

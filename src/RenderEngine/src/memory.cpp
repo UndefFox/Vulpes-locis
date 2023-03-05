@@ -18,7 +18,7 @@ uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
         }
     }
 
-    return NULL;
+    return 0;
 }
 
 } // namespace <anonymous>
@@ -73,8 +73,8 @@ void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size, VkDev
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(graphicsQueue);
+    vkQueueSubmit(queues[GRAPHICS_QUEUE], 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(queues[GRAPHICS_QUEUE]);
 
     vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
 }
@@ -106,8 +106,8 @@ void endSingleTimeCommands(VkCommandBuffer commandBuffer) {
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle( graphicsQueue);
+    vkQueueSubmit(queues[GRAPHICS_QUEUE], 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(queues[GRAPHICS_QUEUE]);
 
     vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
 }
@@ -125,7 +125,6 @@ void copyDataToMemory(VkDeviceMemory& destinationMemory, VkDeviceSize& size, voi
     void* data;
     vkMapMemory(logicalDevice, destinationMemory, 0, size, 0, &data);
         memcpy(data, source, (size_t) size);
-
     vkUnmapMemory(logicalDevice, destinationMemory);
 }
 

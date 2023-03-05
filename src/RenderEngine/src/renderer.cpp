@@ -119,7 +119,7 @@ void drawFrame() {
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence);
+    vkQueueSubmit(queues[GRAPHICS_QUEUE], 1, &submitInfo, inFlightFence);
 
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -131,7 +131,7 @@ void drawFrame() {
     presentInfo.pSwapchains = swapChains;
     presentInfo.pImageIndices = &imageIndex;
 
-    result = vkQueuePresentKHR(presentQueue, &presentInfo);
+    result = vkQueuePresentKHR(queues[PRESENTATION_QUEUE], &presentInfo);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
         vkDeviceWaitIdle(logicalDevice);

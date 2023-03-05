@@ -80,6 +80,7 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 } // namespace <anonimous>
 
 void drawFrame() {
+    vkDeviceWaitIdle(logicalDevice);
     vkWaitForFences(logicalDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
@@ -143,18 +144,25 @@ void drawFrame() {
 
     }
 
+    
+
     drawCalls.clear();
 }
 
 void addDrawCall(DrawCall drawCall) {
     drawCalls.push_back(drawCall);
 }
+
+
     
 void setCamera(std::array<float, 3> pos, std::array<float, 3> rotation) {
     // TODO: make that view will look in camera direction
+
+    glm::vec3 cameraPosition(pos[0], pos[1], pos[2]);
+
     UniformBufferObject ubo{};
     glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 view = glm::lookAt(glm::vec3(pos[0], pos[1], pos[2]), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 view = glm::lookAt(cameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f);
     proj[1][1] *= -1;
 

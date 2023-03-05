@@ -5,8 +5,12 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
+#include "../configuration.h"
+
 
 namespace RenderEngine {
+
+extern Configuration currentConfiguration;
 
 extern VkInstance vulkanInstance;
 extern VkSurfaceKHR surfaceKHR;

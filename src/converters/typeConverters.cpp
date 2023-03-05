@@ -1,11 +1,11 @@
-#include "objectToMesh.h"
+#include "typeConverters.h"
 
 #include <vector>
 #include <array>
 
-namespace ObjectToMesh {
+namespace TypeConverters {
 
-RenderEngine::Mesh convert(Object& object) {
+RenderEngine::Mesh objectToMesh(Object& object) {
     
     std::vector<std::array<int, 3>> existingVertices;
     RenderEngine::Mesh mesh{};

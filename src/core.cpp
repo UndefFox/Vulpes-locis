@@ -1,51 +1,58 @@
 #include "core.h"
 
-#include "RenderEngine/src/values.h"
-
-#include "RenderEngine/storage.h"
 #include "RenderEngine/configurator.h"
 #include "RenderEngine/renderer.h"
-#include "ECS/ECS.h"
+#include "RenderEngine/storage.h"
 
-#include "ECS/components/transformation.h"
-#include "ECS/components/renderdata.h"
+#include "ECS/ECS.h"
 #include "ECS/components/physic.h"
+#include "ECS/components/renderdata.h"
+#include "ECS/components/transformation.h"
 
 #include "FileManager/fileLoaders.h"
 
-#include "converters/objectToMesh.h"
+#include "converters/typeConverters.h"
 
-#include <GLFW/glfw3.h>
-#include <vector>
+#include "ECS/ECS.h"
+
+#define RENDERTEST_SETUP_ON
+
 
 namespace Core {
 
-GLFWwindow* window;
+GLFWwindow* window = nullptr;
+
+namespace {
+    bool isGameEnterupted() {
+        return glfwWindowShouldClose(window);
+    }
+} // namespace <anonymous>
+
 
 void initializate() {
     glfwInit();
-
     RenderEngine::initializate();
-   
+}
+
+void setupInitialState() {
+    #ifdef RENDERTEST_SETUP_ON
+    // Test setup
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     window = glfwCreateWindow(430, 200, "Vulpes locis", nullptr, nullptr);
 
     std::vector<RenderEngine::DeviceInfo> infos = RenderEngine::getAvailableDevices(window);
 
-    RenderEngine::RenderSettings settings{};
+    RenderEngine::Configuration settings{};
     settings.deviceId = infos[0].deviceId;
-    settings.targetWindow = window;
-    settings.vertexShaderFile = "shaders/vertical.spv";
-    settings.fragmentShaderFile = "shaders/fragment.spv";
+    settings.window = window;
+    settings.verticesShaderPath = "shaders/vertical.spv";
+    settings.fragmentShaderPath = "shaders/fragment.spv";
 
     RenderEngine::configurateRender(settings);
 
+    Object monkey =  FileLoaders::loadObjectFile("./resources/models/fox.obj");
 
-// Demonstration setup:
-
-    Object monkey =  ObjectFormater::loadObjectFile("./resources/models/monkey.obj");
-
-    RenderEngine::Mesh monkeyMesh = ObjectToMesh::convert(monkey);
+    RenderEngine::Mesh monkeyMesh = TypeConverters::objectToMesh(monkey);
 
     RenderEngine::addMesh(monkeyMesh);
 
@@ -67,8 +74,8 @@ void initializate() {
     ECS::addEntity(first);
 
     RenderEngine::setCamera({2, 2, 2}, {});
+    #endif
 }
-
 
 void run() {
     while (!isGameEnterupted()) {
@@ -78,17 +85,15 @@ void run() {
     }
 }
 
-void terminate() {
+void cleanup() {
     RenderEngine::deconfiguryRenderer();
+    glfwDestroyWindow(Core::window);
+}
+
+void terminate() {
     RenderEngine::terminate();
-
-
-    glfwDestroyWindow(window);
     glfwTerminate();
 }
 
-bool isGameEnterupted() {
-    return glfwWindowShouldClose(window);
-}
 
 }

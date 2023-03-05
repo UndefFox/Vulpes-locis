@@ -17,7 +17,7 @@ target_link_libraries(core PUBLIC
     module_RenderEngine
     module_ECS
     lib_FileManager
-    converters)
+    typeConverters)
 
 
 

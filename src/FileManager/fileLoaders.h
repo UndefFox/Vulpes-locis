@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace ObjectFormater {
+namespace FileLoaders {
 
 /**
  * Loads data from obj file.

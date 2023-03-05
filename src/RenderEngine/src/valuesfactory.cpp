@@ -59,14 +59,6 @@ void createShaderModule(const std::vector<char>& code, VkShaderModule& shaderMod
 } // namespace <anonymous>
 
 
-void createSurface() {
-    glfwCreateWindowSurface(vulkanInstance, window, nullptr, &surfaceKHR);
-}
-
-void destroySurface() {
-    vkDestroySurfaceKHR(vulkanInstance, surfaceKHR, nullptr);
-}
-
 void createVulkanInstance() {
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -95,6 +87,15 @@ void createVulkanInstance() {
 
 void destroyVulkanInstance() {
     vkDestroyInstance(vulkanInstance, nullptr);
+}
+
+
+void createSurface() {
+    glfwCreateWindowSurface(vulkanInstance, window, nullptr, &surfaceKHR);
+}
+
+void destroySurface() {
+    vkDestroySurfaceKHR(vulkanInstance, surfaceKHR, nullptr);
 }
 
 

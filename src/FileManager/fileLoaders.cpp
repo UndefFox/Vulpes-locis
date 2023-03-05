@@ -7,7 +7,7 @@
 #include <fstream>
 #include <stdlib.h>
 
-namespace ObjectFormater {
+namespace FileLoaders {
 
 Object loadObjectFile(std::string filename) {
     Object object{};

@@ -6,16 +6,16 @@
 
 namespace RenderEngine {
 
-void configurateRender(RenderSettings& settings) {
+void configurateRender(Configuration& settings) {
     setPhysicalDevice(settings.deviceId);
-    window = settings.targetWindow;
+    window = settings.window;
     createSurface();
     createDevice();
     updateSwapchainConfiguration();
     createRenderPass();
     createDescriptorSetLayout();
     createGraphicsPipelineLayout();
-    createGraphicsPipeline(settings.vertexShaderFile, settings.fragmentShaderFile);
+    createGraphicsPipeline(settings.verticesShaderPath, settings.fragmentShaderPath);
     createCommandPool();
     createCommandBuffer();
     createBuffers();
@@ -30,8 +30,6 @@ void configurateRender(RenderSettings& settings) {
 }
 
 void deconfiguryRenderer() {
-    vkDeviceWaitIdle(logicalDevice);
-
     destroySwapchain();
     destroySyncObjects();
     destroyCommandPool();

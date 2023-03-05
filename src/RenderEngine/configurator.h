@@ -6,23 +6,9 @@
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
+#include "configuration.h"
 
 namespace RenderEngine {
-
-struct RenderSettings {
-    /**
-     * Id of the device that must be used for render.
-     */
-    uint32_t deviceId;
-
-    /**
-     * Window on wich rendered images will be presented. 
-     */
-    GLFWwindow* targetWindow;
-
-    std::string vertexShaderFile;
-    std::string fragmentShaderFile;
-};
 
 /**
  * Info about graphical device.
@@ -56,7 +42,7 @@ void terminate();
  * 
  * @param settings Settings for wich render engine will be configurated.
  */
-void configurateRender(RenderSettings& settings);
+void configurateRender(Configuration& settings);
 
 /**
  * Deinitializating all render systems. If rendered is already configured, must be

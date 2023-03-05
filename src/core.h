@@ -1,19 +1,23 @@
 #ifndef H_CORE
 #define H_CORE
 
+#include <GLFW/glfw3.h>
 
-
-#include <iostream>
 
 namespace Core {
 
+extern GLFWwindow* window;
+
+
 /**
- * Initializing game components so game can start running.
- * 
- * Must be called before any other calls.
+ * Executing all functions that need to be run once on the game start.
  */
 void initializate();
 
+/**
+ * Sets all values to set game into state of game start.
+ */
+void setupInitialState();
 
 /**
  * Starts main cycle of the game.
@@ -21,17 +25,15 @@ void initializate();
 void run();
 
 /**
- * Ending game life cycl and freeing resources. 
+ * Returning all systems to initial state.
+ */
+void cleanup();
+
+/**
+ * Executing all functions that need to run once on the game termination.
  */
 void terminate();
 
-/**
- * Checks if the game must be shut down due to window close
- * signal, UI exit button or etc.
- * 
- * @return true If something send signal to close game.
- */
-bool isGameEnterupted();
 
 
 } // namespace Game

@@ -4,9 +4,9 @@
 #include "RenderEngine/mesh.h"
 #include "FileManager/object.h"
 
-namespace ObjectToMesh {
+namespace TypeConverters {
 
-RenderEngine::Mesh convert(Object& object);
+RenderEngine::Mesh objectToMesh(Object& object);
 
 }
 

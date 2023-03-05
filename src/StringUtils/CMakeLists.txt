@@ -1,1 +1,0 @@
-add_library(lib_StringUtils stringutils.cpp)

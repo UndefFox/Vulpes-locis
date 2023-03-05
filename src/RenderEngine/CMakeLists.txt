@@ -1,6 +1,3 @@
-# Libriries:
-# Source libriries:
-
 add_library(values src/values.cpp)
 target_link_libraries(values PUBLIC
     vulkan
@@ -24,20 +21,18 @@ target_link_libraries(valuesfactory PUBLIC
     image
     io)
 
-# Interface libriries:
-
-add_library(storage storage.cpp)
+add_library(storage src/storage.cpp)
 target_link_libraries(storage PUBLIC
     memory
     values
     vulkan)
 
-add_library(configurator configurator.cpp)
+add_library(configurator src/configurator.cpp)
 target_link_libraries(configurator PUBLIC
     glfw3
     valuesfactory)
 
-add_library(renderer renderer.cpp)
+add_library(renderer src/renderer.cpp)
 target_link_libraries(renderer PUBLIC
     vulkan)
 

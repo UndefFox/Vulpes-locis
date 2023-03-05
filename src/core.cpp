@@ -1,19 +1,17 @@
 #include "core.h"
 
-#include "RenderEngine/configurator.h"
-#include "RenderEngine/renderer.h"
-#include "RenderEngine/storage.h"
+#include "RenderEngine/include/configurator.h"
+#include "RenderEngine/include/renderer.h"
+#include "RenderEngine/include/storage.h"
 
-#include "ECS/ECS.h"
-#include "ECS/components/physic.h"
-#include "ECS/components/renderdata.h"
-#include "ECS/components/transformation.h"
+#include "ECS/include/ECS.h"
+#include "ECS/include/components/physic.h"
+#include "ECS/include/components/renderdata.h"
+#include "ECS/include/components/transformation.h"
 
-#include "FileManager/fileLoaders.h"
+#include "fileLoaders.h"
 
-#include "converters/typeConverters.h"
-
-#include "ECS/ECS.h"
+#include "typeConverters.h"
 
 #define RENDERTEST_SETUP_ON
 

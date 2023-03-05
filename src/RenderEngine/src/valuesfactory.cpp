@@ -1,16 +1,17 @@
-#include "valuesfactory.h"
+#include "RenderEngine/src/include/valuesfactory.h"
 
 #include <set>
 #include <algorithm>
 #include <limits>
 #include <array>
 
-#include "image.h"
-#include "vertex.h"
-#include "memory.h"
-#include "ubo.h"
-#include "io.h"
-#include "objectConstant.h"
+#include "RenderEngine/src/include/image.h"
+#include "RenderEngine/src/include/types/vertex.h"
+#include "RenderEngine/src/include/memory.h"
+#include "RenderEngine/src/include/types/ubo.h"
+#include "RenderEngine/src/include/io.h"
+#include "RenderEngine/src/include/types/objectConstant.h"
+#include "RenderEngine/src/include/values.h"
 
 namespace RenderEngine {
 

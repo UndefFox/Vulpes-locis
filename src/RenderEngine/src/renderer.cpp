@@ -1,9 +1,9 @@
-#include "renderer.h"
+#include "RenderEngine/include/renderer.h"
 
-#include "src/values.h"
-#include "src/valuesfactory.h"
-#include "src/ubo.h"
-#include "src/objectConstant.h"
+#include "RenderEngine/src/include/values.h"
+#include "RenderEngine/src/include/valuesfactory.h"
+#include "RenderEngine/src/include/types/ubo.h"
+#include "RenderEngine/src/include/types/objectConstant.h"
 
 #include <vulkan/vulkan.h>
 #include <glm/glm.hpp>

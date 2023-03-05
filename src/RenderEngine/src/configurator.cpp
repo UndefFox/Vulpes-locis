@@ -1,7 +1,7 @@
-#include "configurator.h"
+#include "RenderEngine/include/configurator.h"
 
-#include "src/valuesfactory.h"
-#include "src/values.h"
+#include "RenderEngine/src/include/valuesfactory.h"
+#include "RenderEngine/src/include/values.h"
 
 
 namespace RenderEngine {

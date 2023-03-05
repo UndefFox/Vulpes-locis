@@ -1,7 +1,7 @@
 #ifndef H_RENDERENGINE_STORAGE
 #define H_RENDERENGINE_STORAGE
 
-#include "mesh.h"
+#include "RenderEngine/include/types/mesh.h"
 
 namespace RenderEngine {
 

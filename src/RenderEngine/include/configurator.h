@@ -6,7 +6,7 @@
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
-#include "configuration.h"
+#include "RenderEngine/include/types/configuration.h"
 
 namespace RenderEngine {
 

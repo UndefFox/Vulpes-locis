@@ -1,6 +1,6 @@
-#include "renderengine.h"
+#include "include/systems/renderengine.h"
 
-#include "RenderEngine/renderer.h"
+#include "RenderEngine/include/renderer.h"
 
 namespace RenderEngineSystem {
 

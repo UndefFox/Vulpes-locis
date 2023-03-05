@@ -3,20 +3,25 @@ include_directories(.)
 add_executable(vulpeslocis main.cpp)
 
 #Load modules:
-add_subdirectory(converters)
 add_subdirectory(shaders)
 add_subdirectory(ECS)
 add_subdirectory(RenderEngine)
-add_subdirectory(FileManager)
-add_subdirectory(StringUtils)
 
 # Libriries:
+
+add_library(typeConverters typeConverters.cpp)
+add_library(stringUtils stringutils.cpp)
+
+add_library(fileLoaders fileLoaders.cpp)
+target_link_libraries(fileLoaders PUBLIC
+    stringUtils)
+
 # Interfce libriries:
 add_library(core core.cpp)
 target_link_libraries(core PUBLIC
     module_RenderEngine
     module_ECS
-    lib_FileManager
+    fileLoaders
     typeConverters)
 
 

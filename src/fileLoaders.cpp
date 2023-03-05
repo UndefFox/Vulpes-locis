@@ -1,8 +1,6 @@
 #include "fileLoaders.h"
 
-#include "object.h"
-
-#include "StringUtils/stringutils.h"
+#include "stringutils.h"
 
 #include <fstream>
 #include <stdlib.h>

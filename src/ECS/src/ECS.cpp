@@ -1,17 +1,17 @@
-#include "ECS.h"
+#include "ECS/include/ECS.h"
 
-#include "entity.h"
+#include "ECS/include/types/entity.h"
 
 // All systems headers
-#include "systems/physicsengine.h"
-#include "systems/renderengine.h"
+#include "include/systems/physicsengine.h"
+#include "include/systems/renderengine.h"
 
 // All components headers
-#include "components/physic.h"
-#include "components/renderdata.h"
-#include "components/transformation.h"
+#include "ECS/include/components/physic.h"
+#include "ECS/include/components/renderdata.h"
+#include "ECS/include/components/transformation.h"
 
-#include "RenderEngine/renderer.h"
+#include "RenderEngine/include/renderer.h"
 
 #include <vector>
 #include <array>

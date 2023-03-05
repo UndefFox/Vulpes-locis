@@ -1,8 +1,8 @@
-#include "storage.h"
+#include "RenderEngine/include/storage.h"
 
-#include "src/memory.h"
-#include "src/vertex.h"
-#include "src/values.h"
+#include "RenderEngine/src/include/memory.h"
+#include "RenderEngine/src/include/types/vertex.h"
+#include "RenderEngine/src/include/values.h"
 
 #include <vulkan/vulkan.h>
 #include <cstring>

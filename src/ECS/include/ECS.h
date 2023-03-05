@@ -1,7 +1,7 @@
 #ifndef H_ECS
 #define H_ECS
 
-#include "entity.h"
+#include "types/entity.h"
 
 namespace ECS {
 

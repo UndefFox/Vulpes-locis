@@ -1,15 +1,15 @@
 # Libriries:
 # Systems libriries:
-add_library(sysPhysicsEngine systems/physicsengine.cpp)
+add_library(sysPhysicsEngine src//physicsengine.cpp)
 
-add_library(sysRenderEngine systems/renderengine.cpp)
+add_library(sysRenderEngine src//renderengine.cpp)
 target_link_libraries(sysRenderEngine PUBLIC
     module_RenderEngine)
 
 # Interface libriries:
-add_library(entity entity.cpp)
+add_library(entity src/entity.cpp)
 
-add_library(ECS ECS.cpp)
+add_library(ECS src/ECS.cpp)
 
 
 

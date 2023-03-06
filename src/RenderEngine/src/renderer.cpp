@@ -174,7 +174,7 @@ void setCamera(std::array<float, 3> pos, std::array<float, 3> rotation) {
         glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
     glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + glm::vec3(loockVector), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 proj = glm::perspective(glm::radians(70.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(70.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 100.0f);
     proj[1][1] *= -1;
 
     ubo.model = proj * view;

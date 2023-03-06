@@ -17,6 +17,7 @@ layout (push_constant) uniform ObjectConstants {
 
 void main() {
     gl_Position = ubo.model * objectConstants.model * vec4(inPosition, 1.0);
-    fragLight = clamp(inNormal[0] * 0.53582 + inNormal[1] * 0.3813 + inNormal[2] * 0.75333, 0, 1);
+    vec4 normal = objectConstants.model * vec4(inNormal, 0.0f);
+    fragLight = clamp(normal[0] * 0.53582 + normal[1] * 0.3813 + normal[2] * 0.75333, 0.05, 1);
     fragTexCoord = inTexCoord;
 }

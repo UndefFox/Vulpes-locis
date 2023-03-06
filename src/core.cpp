@@ -73,17 +73,29 @@ void setupInitialState() {
 
     RenderEngine::addMesh(foxMesh);
 
-    Entity* foxEntity = new Entity{};
+    std::array<Entity*, 9> foxes{};
+    for (int i = 0; i < 9; i++) {
+        foxes[i] = new Entity();
 
-    Transformation* trans1 = new Transformation{};
-    trans1->pos = { 0.0f, 0.0f, 0.0f };
-    foxEntity->addComponent<Transformation>(trans1);
+        Transformation* trans1 = new Transformation{};
+        trans1->pos = { 
+            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/20.0f)),
+            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/20.0f)),
+            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/2.0f))};
+        trans1->rotation = { 
+            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/5.0f)),
+            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/5.0f)),
+            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/5.0f))};
+        foxes[i]->addComponent<Transformation>(trans1);
 
-    RenderData* rend1 = new RenderData{};
-    rend1->meshId = 0;
-    foxEntity->addComponent<RenderData>(rend1);
+        RenderData* rend1 = new RenderData{};
+        rend1->meshId = 0;
+        foxes[i]->addComponent<RenderData>(rend1);
 
-    ECS::addEntity(foxEntity);
+        ECS::addEntity(foxes[i]);
+    }
+
+    
 
     Entity* cameraEntity = new Entity{};
 

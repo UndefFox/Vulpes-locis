@@ -1,3 +1,5 @@
+#include <GLFW/glfw3.h>
+
 #include "RenderEngine/include/configurator.h"
 #include "RenderEngine/include/renderer.h"
 #include "RenderEngine/include/storage.h"
@@ -9,6 +11,7 @@
 #include "systems/physicsengine.h"
 #include "systems/renderengine.h"
 
+#include "Window/include/window.h"
 
 #include "fileLoaders.h"
 
@@ -21,14 +24,13 @@
 
 namespace Core {
 
-GLFWwindow* window = nullptr;
-
 namespace {
-    bool isGameEnterupted() {
-        return glfwWindowShouldClose(window);
-    }
-} // namespace <anonymous>
 
+bool isGameInterupted() {
+    return Window::isWindowClosed();
+}
+
+} // namespace <anonymous>
 
 void initializate() {
     glfwInit();
@@ -41,9 +43,8 @@ void setupInitialState() {
 
     RenderEngine::Configuration renderConf{};
 
-    // TODO: make class for window handling.
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    window = glfwCreateWindow(430, 200, "Vulpes locis", nullptr, nullptr);
+    Window::createNewWindow();
+    GLFWwindow* window = Window::getWindowObject();
 
     std::vector<RenderEngine::DeviceInfo> infos = RenderEngine::getDevicesSuportedWindow(window);
     
@@ -88,8 +89,8 @@ void setupInitialState() {
 }
 
 void run() {
-    while (!isGameEnterupted()) {
-        glfwPollEvents();
+    while (!isGameInterupted()) {
+        Window::updateWindow();
 
         ECS::execute();
     }
@@ -97,7 +98,7 @@ void run() {
 
 void cleanup() {
     RenderEngine::deconfiguryRenderer();
-    glfwDestroyWindow(Core::window);
+    Window::destroyWindow();
 }
 
 void terminate() {

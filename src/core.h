@@ -1,13 +1,7 @@
 #ifndef H_CORE
 #define H_CORE
 
-#include <GLFW/glfw3.h>
-
-
 namespace Core {
-
-extern GLFWwindow* window;
-
 
 /**
  * Executing all functions that need to be run once on the game start.

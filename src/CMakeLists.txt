@@ -6,6 +6,7 @@ add_executable(vulpeslocis main.cpp)
 add_subdirectory(shaders)
 add_subdirectory(ECS)
 add_subdirectory(RenderEngine)
+add_subdirectory(Window)
 
 # Libriries:
 
@@ -30,7 +31,8 @@ target_link_libraries(core PUBLIC
     fileLoaders
     typeConverters
     sysPhysicsEngine
-    sysRenderEngine)
+    sysRenderEngine
+    window)
 
 
 

@@ -3,9 +3,12 @@
 #include "RenderEngine/include/storage.h"
 
 #include "ECS/include/ECS.h"
-#include "ECS/include/components/physic.h"
-#include "ECS/include/components/renderdata.h"
-#include "ECS/include/components/transformation.h"
+#include "systems/components/physic.h"
+#include "systems/components/renderdata.h"
+#include "systems/components/transformation.h"
+#include "systems/physicsengine.h"
+#include "systems/renderengine.h"
+
 
 #include "fileLoaders.h"
 
@@ -52,11 +55,16 @@ void setupInitialState() {
 
     RenderEngine::configurateRender(renderConf);
 
-    Object monkey = FileLoaders::loadObjectFile("./resources/models/fox.obj");
+    ECS::addSystemCall(RenderEngineSystem::execute);
+    ECS::addSystemCall(PhysicsEngineSystem::execute);
 
-    RenderEngine::Mesh monkeyMesh = TypeConverters::objectToMesh(monkey);
+    ECS::addSystemPostCall(RenderEngineSystem::postExecute);
 
-    RenderEngine::addMesh(monkeyMesh);
+    Object fox = FileLoaders::loadObjectFile("./resources/models/fox.obj");
+
+    RenderEngine::Mesh foxMesh = TypeConverters::objectToMesh(fox);
+
+    RenderEngine::addMesh(foxMesh);
 
     Entity* first = new Entity{};
 
@@ -71,7 +79,7 @@ void setupInitialState() {
     Physic* phys1 = new Physic{};
     phys1->gravity = -9.8f / 10000.0f;
     phys1->velocity.z = 0.10f;
-    //first->addComponent<Physic>(phys1);
+    first->addComponent<Physic>(phys1);
 
     ECS::addEntity(first);
 

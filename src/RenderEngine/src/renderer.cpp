@@ -6,6 +6,7 @@
 #include "RenderEngine/src/include/types/objectConstant.h"
 
 #include <vulkan/vulkan.h>
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstring>
@@ -63,7 +64,12 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 
     ObjectConstant constant{};
     for (DrawCall drawCall : drawCalls) {
-        constant.pos = {drawCall.position[0], drawCall.position[1], drawCall.position[2]};
+        constant.model = 
+            glm::translate(glm::mat4(1.0f), glm::vec3(drawCall.position[0], drawCall.position[1], drawCall.position[2])) *
+            glm::rotate(glm::mat4(1.0f), drawCall.rotation[0], glm::vec3(1.0f, 0.0f, 0.0f)) *
+            glm::rotate(glm::mat4(1.0f), drawCall.rotation[1], glm::vec3(0.0f, 1.0f, 0.0f)) *
+            glm::rotate(glm::mat4(1.0f), drawCall.rotation[2], glm::vec3(0.0f, 0.0f, 1.0f));
+
 
         vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(constant), &constant);
         
@@ -161,12 +167,17 @@ void setCamera(std::array<float, 3> pos, std::array<float, 3> rotation) {
     glm::vec3 cameraPosition(pos[0], pos[1], pos[2]);
 
     UniformBufferObject ubo{};
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 view = glm::lookAt(cameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::vec4 loockVector = 
+        glm::rotate(glm::mat4(1.0f), glm::radians(rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(rotation[2]), glm::vec3(0.0f, 0.0f, 1.0f)) *
+        glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+
+    glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + glm::vec3(loockVector), glm::vec3(0.0f, 0.0f, 1.0f));
     glm::mat4 proj = glm::perspective(glm::radians(70.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f);
     proj[1][1] *= -1;
 
-    ubo.model = proj * view * model;
+    ubo.model = proj * view;
 
     void* data;
     vkMapMemory(logicalDevice, uniformBufferMemory, 0, sizeof(ubo), 0, &data);

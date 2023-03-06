@@ -8,6 +8,7 @@ namespace RenderEngine {
 struct DrawCall {
     int meshId;
     std::array<float, 3> position;
+    std::array<float, 3> rotation;
 };
 
 }

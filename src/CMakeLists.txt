@@ -12,16 +12,18 @@ add_subdirectory(Window)
 
 add_library(typeConverters typeConverters.cpp)
 add_library(stringUtils stringutils.cpp)
+add_library(player player.cpp)
+add_library(camera camera.cpp)
 
 add_library(fileLoaders fileLoaders.cpp)
 target_link_libraries(fileLoaders PUBLIC
     stringUtils)
 
 add_library(sysPhysicsEngine systems/physicsengine.cpp)
-
 add_library(sysRenderEngine systems/renderengine.cpp)
 target_link_libraries(sysRenderEngine PUBLIC
     module_RenderEngine)
+add_library(sysMono systems/monoSystem.cpp)
 
 # Interfce libriries:
 add_library(core core.cpp)
@@ -32,7 +34,10 @@ target_link_libraries(core PUBLIC
     typeConverters
     sysPhysicsEngine
     sysRenderEngine
-    window)
+    sysMono
+    window
+    camera
+    player)
 
 
 

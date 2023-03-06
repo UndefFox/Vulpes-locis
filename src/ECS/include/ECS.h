@@ -8,7 +8,12 @@ namespace ECS {
     /**
      * Adds entity to system.
      */
-    void addEntity(Entity* entity);
+    int addEntity(Entity* entity);
+
+    /**
+     * Retunr entity by ID.
+     */
+    Entity* getEntity(int id);
 
     /**
      * Adding system function call to proceed entities.

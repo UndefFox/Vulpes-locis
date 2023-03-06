@@ -8,8 +8,13 @@
 #include "systems/components/physic.h"
 #include "systems/components/renderdata.h"
 #include "systems/components/transformation.h"
+#include "systems/components/mono.h"
+#include "systems/components/playerData.h"
 #include "systems/physicsengine.h"
 #include "systems/renderengine.h"
+#include "systems/monoSystem.h"
+#include "player.h"
+#include "camera.h"
 
 #include "Window/include/window.h"
 
@@ -58,6 +63,7 @@ void setupInitialState() {
 
     ECS::addSystemCall(RenderEngineSystem::execute);
     ECS::addSystemCall(PhysicsEngineSystem::execute);
+    ECS::addSystemCall(MonoSystem::execute);
 
     ECS::addSystemPostCall(RenderEngineSystem::postExecute);
 
@@ -67,24 +73,46 @@ void setupInitialState() {
 
     RenderEngine::addMesh(foxMesh);
 
-    Entity* first = new Entity{};
+    Entity* foxEntity = new Entity{};
 
     Transformation* trans1 = new Transformation{};
     trans1->pos = { 0.0f, 0.0f, 0.0f };
-    first->addComponent<Transformation>(trans1);
+    foxEntity->addComponent<Transformation>(trans1);
 
     RenderData* rend1 = new RenderData{};
     rend1->meshId = 0;
-    first->addComponent<RenderData>(rend1);
+    foxEntity->addComponent<RenderData>(rend1);
 
-    Physic* phys1 = new Physic{};
-    phys1->gravity = -9.8f / 10000.0f;
-    phys1->velocity.z = 0.10f;
-    first->addComponent<Physic>(phys1);
+    ECS::addEntity(foxEntity);
 
-    ECS::addEntity(first);
+    Entity* cameraEntity = new Entity{};
 
-    RenderEngine::setCamera({2, 2, 2}, {});
+    Transformation* trans3 = new Transformation{};
+    trans3->pos = { 2.0f, 2.5f, 2.0f };
+    cameraEntity->addComponent<Transformation>(trans3);
+
+    int cameraEntityId = ECS::addEntity(cameraEntity);
+
+    Entity* playerEntity = new Entity{};
+
+    Transformation* trans2 = new Transformation{};
+    trans2->pos = { 2.0f, 2.0f, 2.0f };
+    trans2->rotation = { 0.0f, 0.0f, 0.0f };
+    playerEntity->addComponent<Transformation>(trans2);
+
+    PlayerData* playerData = new PlayerData{};
+    playerData->cameraObjectId = cameraEntityId;
+    playerEntity->addComponent<PlayerData>(playerData);
+
+    Mono* mono = new Mono{};
+    mono->calls.push_back(Player::execute);
+    mono->calls.push_back(Camera::execute);
+    playerEntity->addComponent<Mono>(mono);
+
+    ECS::addEntity(playerEntity);
+
+
+
     #endif
 }
 

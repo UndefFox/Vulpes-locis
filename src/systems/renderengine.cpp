@@ -33,6 +33,9 @@ void execute(Entity& entity) {
     drawCall.position[0] = transform->pos.x;
     drawCall.position[1] = transform->pos.y;
     drawCall.position[2] = transform->pos.z;
+    drawCall.rotation[0] = transform->rotation.roll;
+    drawCall.rotation[1] = transform->rotation.pitch;
+    drawCall.rotation[2] = transform->rotation.yaw;
 
     RenderEngine::addDrawCall(drawCall);
 }

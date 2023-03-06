@@ -11,7 +11,7 @@ void destroyWindow();
 
 void updateWindow();
 
-void isKeyPressed(int key);
+bool isKeyPressed(int key);
 
 bool isWindowClosed();
 

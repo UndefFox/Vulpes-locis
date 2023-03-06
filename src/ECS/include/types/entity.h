@@ -36,7 +36,8 @@ public:
 
         if (components.size() < getTypeId<T>() + 1)
             components.resize(getTypeId<T>() + 1);
-        components[getTypeId<T>()] = newComponent;
+            
+        components[getTypeId<T>()] = (void*)newComponent;
     }
 
     template <typename T>

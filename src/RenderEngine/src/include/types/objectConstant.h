@@ -7,7 +7,7 @@
 namespace RenderEngine {
 
 struct ObjectConstant {
-    glm::vec3 pos;
+    glm::mat4 model;
 };
 
 } // namespace RenderEngine

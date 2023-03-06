@@ -12,9 +12,14 @@ static std::vector<Entity*> entities{};
 static std::vector<void (*)(Entity&)> systemsFunctionsCalls{};
 static std::vector<void (*)()> systemsFunctionsPostCalls{};
 
-    void addEntity(Entity* entity) {
+    int addEntity(Entity* entity) {
         entities.push_back(entity);
+        return entities.size() - 1;
     }
+
+Entity* getEntity(int id) {
+    return entities[id];
+}
 
     void addSystemCall(void (*executionFunction)(Entity&)) {
         systemsFunctionsCalls.push_back(executionFunction);

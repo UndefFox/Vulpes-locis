@@ -20,8 +20,8 @@ void updateWindow() {
     glfwPollEvents();
 }
 
-void isKeyPressed(int key) {
-    glfwGetKey(currentWindow, key);
+bool isKeyPressed(int key) {
+    return glfwGetKey(currentWindow, key);
 }
 
 bool isWindowClosed() {

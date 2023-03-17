@@ -66,9 +66,9 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     for (DrawCall drawCall : drawCalls) {
         constant.model = 
             glm::translate(glm::mat4(1.0f), glm::vec3(drawCall.position[0], drawCall.position[1], drawCall.position[2])) *
-            glm::rotate(glm::mat4(1.0f), drawCall.rotation[0], glm::vec3(1.0f, 0.0f, 0.0f)) *
-            glm::rotate(glm::mat4(1.0f), drawCall.rotation[1], glm::vec3(0.0f, 1.0f, 0.0f)) *
-            glm::rotate(glm::mat4(1.0f), drawCall.rotation[2], glm::vec3(0.0f, 0.0f, 1.0f));
+            glm::rotate(glm::mat4(1.0f), glm::radians(drawCall.rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f)) *
+            glm::rotate(glm::mat4(1.0f), glm::radians(drawCall.rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f)) *
+            glm::rotate(glm::mat4(1.0f), glm::radians(drawCall.rotation[2]), glm::vec3(0.0f, 0.0f, 1.0f));
 
 
         vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(constant), &constant);

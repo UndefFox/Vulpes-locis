@@ -41,7 +41,10 @@ void execute(Entity& entity) {
 
     Transformation* cameraTransform = camera->getComponent<Transformation>();
     *cameraTransform = *playerTransform;
-    cameraTransform->pos.z += 0.5f;
+    cameraTransform->pos.x -= 3.0f * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
+    cameraTransform->pos.y -= 3.0f * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
+    cameraTransform->pos.z += 2.5f;
+    
 
     cameraTransform->rotation.yaw = playerTransform->rotation.yaw;
 

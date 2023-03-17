@@ -9,10 +9,12 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#define PLAYER_WALK_SPEED 0.1f
-#define PLAYER_TURN_SPEED 5.0f
+#define PLAYER_WALK_SPEED_MPS 15.0f
+#define PLAYER_TURN_SPEED_DPS 180.0f
 
 namespace Player {
+
+
 
 void execute(Entity& entity) {
 
@@ -20,18 +22,21 @@ void execute(Entity& entity) {
     Entity* camera = ECS::getEntity(playerData->cameraObjectId);
 
     Transformation* playerTransform = entity.getComponent<Transformation>();
+
+    float timeCof = Window::lastFrameTimeDuration / 1000.0f;
+
     if (Window::isKeyPressed(GLFW_KEY_W)) {
-        playerTransform->pos.x += PLAYER_WALK_SPEED * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
-        playerTransform->pos.y += PLAYER_WALK_SPEED * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerTransform->pos.x += PLAYER_WALK_SPEED_MPS * timeCof * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerTransform->pos.y += PLAYER_WALK_SPEED_MPS * timeCof * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
     } else if (Window::isKeyPressed(GLFW_KEY_S)) {
-        playerTransform->pos.x -= PLAYER_WALK_SPEED * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
-        playerTransform->pos.y -= PLAYER_WALK_SPEED * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerTransform->pos.x -= PLAYER_WALK_SPEED_MPS * timeCof * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerTransform->pos.y -= PLAYER_WALK_SPEED_MPS * timeCof * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
     }
 
     if (Window::isKeyPressed(GLFW_KEY_A)) {
-        playerTransform->rotation.yaw += PLAYER_TURN_SPEED;
+        playerTransform->rotation.yaw += PLAYER_TURN_SPEED_DPS * timeCof;
     } else if (Window::isKeyPressed(GLFW_KEY_D)) {
-        playerTransform->rotation.yaw -= PLAYER_TURN_SPEED;
+        playerTransform->rotation.yaw -= PLAYER_TURN_SPEED_DPS * timeCof;
     }
 
     Transformation* cameraTransform = camera->getComponent<Transformation>();

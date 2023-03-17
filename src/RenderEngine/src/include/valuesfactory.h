@@ -11,7 +11,8 @@
 namespace RenderEngine {
 
 /**
- * Configuration that used when creating values. 
+ * Configuration acording to wich all create functions will be
+ * creating values. 
  */
 extern Configuration currentConfiguration;
 
@@ -34,13 +35,12 @@ void destroySurface();
 std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
 
 /**
- * Checks minimum requirements for game.
+ * @brief Checks minimum requirements for game.
+ * 
+ * If device passed, it can run game in minimal conditions, so
+ * not all settings available for it.
  * 
  * @param device The device that must be checked. 
- * 
- * @returns true if device capable for running the game, but some
- * settings maybe unavailable.
- * @returns false if device can't render game at all.
  */
 bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device, VkSurfaceKHR testSurface);
 

@@ -34,8 +34,6 @@ void configurateRender(Configuration& configuration) {
     createSwapchain();
     createDepthResources();
     createFramebuffers();
-
-    
 }
 
 void deconfiguryRenderer() {

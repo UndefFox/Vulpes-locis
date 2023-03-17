@@ -3,6 +3,9 @@
 
 #include "ECS/include/types/entity.h"
 
+/**
+ * Controller class of player. 
+ */
 namespace Player {
 
 void execute(Entity& enity);

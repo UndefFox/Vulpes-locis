@@ -5,7 +5,7 @@
 
 namespace Camera {
 
-    void execute(Entity& entity);
+void execute(Entity& entity);
 
 }
 

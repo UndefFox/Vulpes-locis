@@ -1,8 +1,10 @@
 #include "Window/include/window.h"
 
-#include <GLFW/glfw3.h>
 
 namespace Window {
+
+float lastFrameTimeDuration;
+std::chrono::time_point<std::chrono::system_clock> lastFrameTime = std::chrono::system_clock::now();
 
 GLFWwindow* currentWindow = nullptr;
 
@@ -18,6 +20,8 @@ void destroyWindow() {
 
 void updateWindow() {
     glfwPollEvents();
+    lastFrameTimeDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastFrameTime).count();
+    lastFrameTime = std::chrono::system_clock::now();
 }
 
 bool isKeyPressed(int key) {

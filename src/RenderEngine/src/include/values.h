@@ -5,6 +5,9 @@
 #include <array>
 #include <vector>
 
+/**
+ * @file Definde all static variable used across library files.
+ */
 
 namespace RenderEngine {
 

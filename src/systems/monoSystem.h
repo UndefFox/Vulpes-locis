@@ -3,6 +3,9 @@
 
 #include "ECS/include/types/entity.h"
 
+/**
+ * System for executing not widly used scripts like: Player, Camera.
+ */
 namespace MonoSystem {
 
 void execute(Entity& entity);

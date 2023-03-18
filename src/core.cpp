@@ -5,11 +5,11 @@
 #include "RenderEngine/include/storage.h"
 
 #include "ECS/include/ECS.h"
-#include "systems/components/physic.h"
 #include "systems/components/renderdata.h"
 #include "systems/components/transformation.h"
 #include "systems/components/mono.h"
 #include "systems/components/playerData.h"
+#include "systems/components/colider.h"
 #include "systems/physicsengine.h"
 #include "systems/renderengine.h"
 #include "systems/monoSystem.h"
@@ -83,24 +83,29 @@ void setupInitialState() {
     RenderEngine::addMesh(meterCuberMesh);
     
 
-    std::array<Entity*, 9> foxes{};
-    for (int i = 0; i < 9; i++) {
+    std::array<Entity*, 250> foxes{};
+    for (int i = 0; i < 250; i++) {
         foxes[i] = new Entity();
 
         Transformation* trans1 = new Transformation{};
+        trans1->isStatic = true;
         trans1->pos = { 
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)),
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)),
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/2.0f))};
-        trans1->rotation = { 
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/360.0f)),
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/360.0f)),
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/360.0f))};
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/100.0f)) - 50.f,
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/100.0f)) - 50.f,
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/40.0f))};
+
         foxes[i]->addComponent<Transformation>(trans1);
 
         RenderData* rend1 = new RenderData{};
         rend1->meshId = 0;
         foxes[i]->addComponent<RenderData>(rend1);
+
+        Colider* foxColider = new Colider{};
+        foxColider->type = ColiderType::Box;
+        foxColider->xSize = 1.0f;
+        foxColider->ySize = 1.0f;
+        foxColider->zSize = 1.0f;
+        foxes[i]->addComponent<Colider>(foxColider);
 
         ECS::addEntity(foxes[i]);
     }
@@ -108,18 +113,35 @@ void setupInitialState() {
     Entity* meterCubeEntity = new Entity{};
     
     Transformation* cubeTrans = new Transformation{};
+    cubeTrans->isStatic = true;
+    cubeTrans->pos.y = 15.0f;
     meterCubeEntity->addComponent<Transformation>(cubeTrans);
 
     RenderData* cubeRenderData = new RenderData{};
     cubeRenderData->meshId = 2;
     meterCubeEntity->addComponent<RenderData>(cubeRenderData);
 
+    Colider* cubeColider = new Colider{};
+    cubeColider->type = ColiderType::Box;
+    cubeColider->xSize = 1.0f;
+    cubeColider->ySize = 1.0f;
+    cubeColider->zSize = 1.0f;
+    meterCubeEntity->addComponent<Colider>(cubeColider);
+
     ECS::addEntity(meterCubeEntity);
 
     Entity* planeEntity = new Entity{};
     
     Transformation* planeTrans = new Transformation{};
+    planeTrans->isStatic = true;
     planeEntity->addComponent<Transformation>(planeTrans);
+
+    Colider* planeColider = new Colider{};
+    planeColider->type = ColiderType::Box;
+    planeColider->xSize = 50.0f;
+    planeColider->ySize = 50.0f;
+    planeColider->zSize = 0.0f;
+    planeEntity->addComponent<Colider>(planeColider);
 
     RenderData* planeRenderData = new RenderData{};
     planeRenderData->meshId = 1;
@@ -146,13 +168,20 @@ void setupInitialState() {
     playerEntity->addComponent<RenderData>(playerRenderData);
 
     Transformation* trans2 = new Transformation{};
-    trans2->pos = { 2.0f, 2.0f, 0.0f };
+    trans2->pos = { 2.0f, 2.0f, 2.0f };
     trans2->rotation = { 0.0f, 0.0f, 0.0f };
     playerEntity->addComponent<Transformation>(trans2);
 
     PlayerData* playerData = new PlayerData{};
     playerData->cameraObjectId = cameraEntityId;
     playerEntity->addComponent<PlayerData>(playerData);
+
+    Colider* playerColider = new Colider{};
+    playerColider->type = ColiderType::Box;
+    playerColider->xSize = 1.0f;
+    playerColider->ySize = 1.0f;
+    playerColider->zSize = 1.0f;
+    playerEntity->addComponent<Colider>(playerColider);
 
     Mono* mono = new Mono{};
     mono->calls.push_back(Player::execute);

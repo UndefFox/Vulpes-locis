@@ -25,12 +25,27 @@ void execute(Entity& entity) {
 
     float timeCof = Window::lastFrameTimeDuration / 1000.0f;
 
+    
+
     if (Window::isKeyPressed(GLFW_KEY_W)) {
-        playerTransform->pos.x += PLAYER_WALK_SPEED_MPS * timeCof * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
-        playerTransform->pos.y += PLAYER_WALK_SPEED_MPS * timeCof * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerTransform->velocity.x = PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerTransform->velocity.y = PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
     } else if (Window::isKeyPressed(GLFW_KEY_S)) {
-        playerTransform->pos.x -= PLAYER_WALK_SPEED_MPS * timeCof * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
-        playerTransform->pos.y -= PLAYER_WALK_SPEED_MPS * timeCof * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerTransform->velocity.x = -PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerTransform->velocity.y = -PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
+    } else {
+        playerTransform->velocity.x = 0;
+        playerTransform->velocity.y = 0;
+    }
+
+    static bool faled = true;
+    if (playerTransform->velocity.z < 0) {
+        faled = true;
+    }
+
+    if (Window::isKeyPressed(GLFW_KEY_SPACE) && faled && std::abs(playerTransform->velocity.z) < 0.1f) {
+        playerTransform->velocity.z = 20.0f;
+        faled = false;
     }
 
     if (Window::isKeyPressed(GLFW_KEY_A)) {

@@ -20,6 +20,8 @@ target_link_libraries(fileLoaders PUBLIC
     stringUtils)
 
 add_library(sysPhysicsEngine systems/physicsengine.cpp)
+target_link_libraries(sysPhysicsEngine PUBLIC
+    module_ECS)
 add_library(sysRenderEngine systems/renderengine.cpp)
 target_link_libraries(sysRenderEngine PUBLIC
     module_RenderEngine)

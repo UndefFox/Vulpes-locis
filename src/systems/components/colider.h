@@ -8,9 +8,9 @@ enum ColiderType {
 struct Colider {
     ColiderType type;
 
-    int xSize;
-    int ySize;
-    int zSize;
+    float xSize;
+    float ySize;
+    float zSize;
 };
 
 #endif

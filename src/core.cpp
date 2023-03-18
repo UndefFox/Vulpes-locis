@@ -36,9 +36,9 @@ bool isGameInterupted() {
 }
 
 void runSystems() {
+    PhysicsEngineSystem::execute();
     MonoSystem::execute();
     RenderEngineSystem::execute();
-    PhysicsEngineSystem::execute();
     
 
     RenderEngineSystem::postExecute();
@@ -83,28 +83,28 @@ void setupInitialState() {
     RenderEngine::addMesh(meterCuberMesh);
     
 
-    std::array<Entity*, 250> foxes{};
-    for (int i = 0; i < 250; i++) {
+    std::array<Entity*, 500> foxes{};
+    for (int i = 0; i < 500; i++) {
         foxes[i] = new Entity();
 
         Transformation* trans1 = new Transformation{};
-        trans1->isStatic = true;
+        trans1->isStatic = false;
         trans1->pos = { 
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/100.0f)) - 50.f,
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/100.0f)) - 50.f,
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/40.0f))};
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)),
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)),
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/100.0f))};
 
         foxes[i]->addComponent<Transformation>(trans1);
 
         RenderData* rend1 = new RenderData{};
-        rend1->meshId = 0;
+        rend1->meshId = 2;
         foxes[i]->addComponent<RenderData>(rend1);
 
         Colider* foxColider = new Colider{};
         foxColider->type = ColiderType::Box;
-        foxColider->xSize = 1.0f;
-        foxColider->ySize = 1.0f;
-        foxColider->zSize = 1.0f;
+        foxColider->xSize = 0.5f;
+        foxColider->ySize = 0.5f;
+        foxColider->zSize = 0.5f;
         foxes[i]->addComponent<Colider>(foxColider);
 
         ECS::addEntity(foxes[i]);
@@ -168,7 +168,7 @@ void setupInitialState() {
     playerEntity->addComponent<RenderData>(playerRenderData);
 
     Transformation* trans2 = new Transformation{};
-    trans2->pos = { 2.0f, 2.0f, 2.0f };
+    trans2->pos = { 2.0f, 2.0f, 3.0f };
     trans2->rotation = { 0.0f, 0.0f, 0.0f };
     playerEntity->addComponent<Transformation>(trans2);
 
@@ -180,7 +180,7 @@ void setupInitialState() {
     playerColider->type = ColiderType::Box;
     playerColider->xSize = 1.0f;
     playerColider->ySize = 1.0f;
-    playerColider->zSize = 1.0f;
+    playerColider->zSize = 0.8f;
     playerEntity->addComponent<Colider>(playerColider);
 
     Mono* mono = new Mono{};

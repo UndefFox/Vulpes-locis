@@ -102,10 +102,6 @@ void execute() {
                         }
                     }
 
-                    
-                    
-                    
-
                     if (cord == 0) {
                         transformX->pos.x += transformX->velocity.x * biggestConf;
                         transformX->velocity.x = 0;

@@ -70,12 +70,16 @@ void setupInitialState() {
 
     Object fox = FileLoaders::loadObjectFile("./resources/models/fox.obj");
     Object plane = FileLoaders::loadObjectFile("./resources/models/plane.obj");
+    Object meterCuber = FileLoaders::loadObjectFile("./resources/models/meterCube.obj");
 
     RenderEngine::Mesh foxMesh = TypeConverters::objectToMesh(fox);
     RenderEngine::Mesh planeMesh = TypeConverters::objectToMesh(plane);
+    RenderEngine::Mesh meterCuberMesh = TypeConverters::objectToMesh(meterCuber);
 
     RenderEngine::addMesh(foxMesh);
     RenderEngine::addMesh(planeMesh);
+    RenderEngine::addMesh(meterCuberMesh);
+    
 
     std::array<Entity*, 9> foxes{};
     for (int i = 0; i < 9; i++) {
@@ -83,13 +87,13 @@ void setupInitialState() {
 
         Transformation* trans1 = new Transformation{};
         trans1->pos = { 
-            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/20.0f)),
-            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/20.0f)),
-            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/2.0f))};
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)),
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)),
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/2.0f))};
         trans1->rotation = { 
-            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/360.0f)),
-            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/360.0f)),
-            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/360.0f))};
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/360.0f)),
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/360.0f)),
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/360.0f))};
         foxes[i]->addComponent<Transformation>(trans1);
 
         RenderData* rend1 = new RenderData{};
@@ -98,6 +102,17 @@ void setupInitialState() {
 
         ECS::addEntity(foxes[i]);
     }
+
+    Entity* meterCubeEntity = new Entity{};
+    
+    Transformation* cubeTrans = new Transformation{};
+    meterCubeEntity->addComponent<Transformation>(cubeTrans);
+
+    RenderData* cubeRenderData = new RenderData{};
+    cubeRenderData->meshId = 2;
+    meterCubeEntity->addComponent<RenderData>(cubeRenderData);
+
+    ECS::addEntity(meterCubeEntity);
 
     Entity* planeEntity = new Entity{};
     

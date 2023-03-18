@@ -2,6 +2,8 @@
 
 #include "components/mono.h"
 
+#include "ECS/include/ECS.h"
+
 namespace MonoSystem {
 
 namespace {
@@ -15,16 +17,22 @@ static bool isEntityCompatable(Entity& entity) {
 
 } // namespace <anonymous>
 
-void execute(Entity& entity) {
+void execute() {
 
-    if (!isEntityCompatable(entity)) {
-        return;
-    }
+    for (int id = 0; id < ECS::getEntityCount(); id++) {
 
-    Mono* mono = entity.getComponent<Mono>();
+        Entity& entity = *ECS::getEntity(id);
 
-    for (int i = 0; i < mono->calls.size(); i++) {
-        mono->calls[i](entity);
+        if (!isEntityCompatable(entity)) {
+            continue;
+        }
+
+        Mono* mono = entity.getComponent<Mono>();
+
+        for (int i = 0; i < mono->calls.size(); i++) {
+            mono->calls[i](entity);
+        }
+
     }
 }
 

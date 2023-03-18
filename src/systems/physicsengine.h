@@ -5,7 +5,7 @@
 
 namespace PhysicsEngineSystem {
 
-void execute(Entity& entity);
+void execute();
 
 }
 

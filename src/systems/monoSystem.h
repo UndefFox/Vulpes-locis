@@ -8,7 +8,7 @@
  */
 namespace MonoSystem {
 
-void execute(Entity& entity);
+void execute();
 
 }
 

@@ -35,6 +35,15 @@ bool isGameInterupted() {
     return Window::isWindowClosed();
 }
 
+void runSystems() {
+    MonoSystem::execute();
+    RenderEngineSystem::execute();
+    PhysicsEngineSystem::execute();
+    
+
+    RenderEngineSystem::postExecute();
+}
+
 } // namespace <anonymous>
 
 void initializate() {
@@ -60,13 +69,6 @@ void setupInitialState() {
     renderConf.memoryAmount = 1024 * 1024;
 
     RenderEngine::configurateRender(renderConf);
-
-    ECS::addSystemCall(MonoSystem::execute);
-    ECS::addSystemCall(RenderEngineSystem::execute);
-    ECS::addSystemCall(PhysicsEngineSystem::execute);
-    
-
-    ECS::addSystemPostCall(RenderEngineSystem::postExecute);
 
     Object fox = FileLoaders::loadObjectFile("./resources/models/fox.obj");
     Object plane = FileLoaders::loadObjectFile("./resources/models/plane.obj");
@@ -154,7 +156,7 @@ void setupInitialState() {
 
     Mono* mono = new Mono{};
     mono->calls.push_back(Player::execute);
-    
+
     playerEntity->addComponent<Mono>(mono);
 
     ECS::addEntity(playerEntity);
@@ -168,9 +170,11 @@ void run() {
     while (!isGameInterupted()) {
         Window::updateWindow();
 
-        ECS::execute();
+        runSystems();
     }
 }
+
+
 
 void cleanup() {
     RenderEngine::deconfiguryRenderer();

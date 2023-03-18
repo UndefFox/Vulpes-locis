@@ -3,6 +3,7 @@
 #include "components/transformation.h"
 #include "components/physic.h"
 
+#include "ECS/include/ECS.h"
 
 namespace PhysicsEngineSystem {
 
@@ -18,20 +19,26 @@ static bool isEntityCompatable(Entity& entity) {
 
 } // namespace <anonymous>
 
-void execute(Entity& entity) {
+void execute() {
 
-    if (!isEntityCompatable(entity)) {
-        return;
+    for (int id = 0; id < ECS::getEntityCount(); id++) {
+
+        Entity& entity = *ECS::getEntity(id);
+
+        if (!isEntityCompatable(entity)) {
+            continue;
+        }
+
+        Transformation* transform = entity.getComponent<Transformation>();
+        Physic* physics = entity.getComponent<Physic>();
+
+        physics->velocity.z += physics->gravity;
+
+        transform->pos.x += physics->velocity.x;
+        transform->pos.y += physics->velocity.y;
+        transform->pos.z += physics->velocity.z;
+
     }
-
-    Transformation* transform = entity.getComponent<Transformation>();
-    Physic* physics = entity.getComponent<Physic>();
-
-    physics->velocity.z += physics->gravity;
-
-    transform->pos.x += physics->velocity.x;
-    transform->pos.y += physics->velocity.y;
-    transform->pos.z += physics->velocity.z;
 }
 
 }

@@ -5,7 +5,7 @@
 
 namespace RenderEngineSystem {
 
-void execute(Entity& entity);
+void execute();
 
 void postExecute();
 

@@ -90,8 +90,8 @@ void setupInitialState() {
         Transformation* trans1 = new Transformation{};
         trans1->isStatic = false;
         trans1->pos = { 
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)),
-            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)),
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)) + 3.0f,
+            static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/20.0f)) + 3.0f,
             static_cast<float>(rand()) / (static_cast <float> (RAND_MAX/100.0f))};
 
         foxes[i]->addComponent<Transformation>(trans1);
@@ -190,14 +190,25 @@ void setupInitialState() {
 
     ECS::addEntity(playerEntity);
 
-
+    Window::setCursorLock(true);
 
     #endif
 }
 
+bool pushing = false;
+bool cState = true;
 void run() {
     while (!isGameInterupted()) {
         Window::updateWindow();
+
+        if (!pushing && Window::isKeyPressed(GLFW_KEY_ESCAPE)) {
+            pushing = true;
+            Window::setCursorLock(!cState);
+            cState = !cState;
+        }
+        else if (pushing && !Window::isKeyPressed(GLFW_KEY_ESCAPE)) {
+            pushing = false;
+        }
 
         runSystems();
     }

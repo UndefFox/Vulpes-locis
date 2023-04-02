@@ -16,6 +16,9 @@ namespace Window {
 extern float lastFrameTimeDuration;
 extern std::chrono::time_point<std::chrono::system_clock> lastFrameTime;
 
+extern float xMouseMove;
+extern float yMouseMove;
+
 /**
  * Creates new widnow with preseted settings.
  */
@@ -42,6 +45,10 @@ bool isKeyPressed(int key);
  */
 bool isWindowClosed();
 
+/**
+ * Change state of cursor locking. If true set, then cursor will be locked to the window.
+ */
+void setCursorLock(bool state);
 
 /**
  * Return object of a the current widnow.

@@ -17,6 +17,12 @@ namespace {
 
 std::vector<DrawCall> drawCalls{};
 
+glm::mat4 rotateBy3Axis(float roll, float pitch, float yaw) {
+    return glm::rotate(glm::mat4(1.0f), glm::radians(yaw), glm::vec3(0.0f, 0.0f, 1.0f)) *
+    glm::rotate(glm::mat4(1.0f), glm::radians(pitch), glm::vec3(0.0f, 1.0f, 0.0f)) *
+    glm::rotate(glm::mat4(1.0f), glm::radians(roll), glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
 void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -66,9 +72,7 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     for (DrawCall drawCall : drawCalls) {
         constant.model = 
             glm::translate(glm::mat4(1.0f), glm::vec3(drawCall.position[0], drawCall.position[1], drawCall.position[2])) *
-            glm::rotate(glm::mat4(1.0f), glm::radians(drawCall.rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f)) *
-            glm::rotate(glm::mat4(1.0f), glm::radians(drawCall.rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f)) *
-            glm::rotate(glm::mat4(1.0f), glm::radians(drawCall.rotation[2]), glm::vec3(0.0f, 0.0f, 1.0f));
+            rotateBy3Axis(drawCall.rotation[0], drawCall.rotation[1], drawCall.rotation[2]);
 
 
         vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(constant), &constant);
@@ -167,14 +171,10 @@ void setCamera(std::array<float, 3> pos, std::array<float, 3> rotation) {
     glm::vec3 cameraPosition(pos[0], pos[1], pos[2]);
 
     UniformBufferObject ubo{};
-    glm::vec4 loockVector = 
-        glm::rotate(glm::mat4(1.0f), glm::radians(rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f)) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f)) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(rotation[2]), glm::vec3(0.0f, 0.0f, 1.0f)) *
-        glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+    glm::vec4 loockVector = rotateBy3Axis(rotation[0], rotation[1], rotation[2]) * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
     glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + glm::vec3(loockVector), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 proj = glm::perspective(glm::radians(70.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 100.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(90.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 100.0f);
     proj[1][1] *= -1;
 
     ubo.model = proj * view;

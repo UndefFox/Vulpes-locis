@@ -18,7 +18,8 @@ namespace {
 std::vector<DrawCall> drawCalls{};
 
 glm::mat4 rotateBy3Axis(float roll, float pitch, float yaw) {
-    return glm::rotate(glm::mat4(1.0f), glm::radians(yaw), glm::vec3(0.0f, 0.0f, 1.0f)) *
+    return 
+    glm::rotate(glm::mat4(1.0f), glm::radians(yaw), glm::vec3(0.0f, 0.0f, 1.0f)) *
     glm::rotate(glm::mat4(1.0f), glm::radians(pitch), glm::vec3(0.0f, 1.0f, 0.0f)) *
     glm::rotate(glm::mat4(1.0f), glm::radians(roll), glm::vec3(1.0f, 0.0f, 0.0f));
 }

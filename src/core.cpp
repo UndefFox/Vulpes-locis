@@ -15,6 +15,7 @@
 #include "systems/monoSystem.h"
 #include "player.h"
 #include "camera.h"
+#include "userInput.h"
 
 #include "Window/include/window.h"
 
@@ -32,7 +33,7 @@ namespace Core {
 namespace {
 
 bool isGameInterupted() {
-    return Window::isWindowClosed();
+    return Window::isWindowClosed() || UserInput::getKeyHoldDuration(KEY_ESC) > 2000.0f;
 }
 
 void runSystems() {
@@ -195,19 +196,15 @@ void setupInitialState() {
     #endif
 }
 
-bool pushing = false;
 bool cState = true;
 void run() {
     while (!isGameInterupted()) {
         Window::updateWindow();
+        UserInput::updateKeyState();
 
-        if (!pushing && Window::isKeyPressed(GLFW_KEY_ESCAPE)) {
-            pushing = true;
-            Window::setCursorLock(!cState);
+        if (UserInput::getKeyState(KEY_ESC) == UserInput::KeyState::PRESS) {
+            Window::setCursorLock(cState);
             cState = !cState;
-        }
-        else if (pushing && !Window::isKeyPressed(GLFW_KEY_ESCAPE)) {
-            pushing = false;
         }
 
         runSystems();

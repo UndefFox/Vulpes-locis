@@ -15,6 +15,10 @@ add_library(stringUtils stringutils.cpp)
 add_library(player player.cpp)
 add_library(camera camera.cpp)
 
+add_library(userInput userInput.cpp)
+target_link_libraries(userInput PUBLIC
+    window)
+
 add_library(fileLoaders fileLoaders.cpp)
 target_link_libraries(fileLoaders PUBLIC
     stringUtils)
@@ -39,7 +43,8 @@ target_link_libraries(core PUBLIC
     sysMono
     window
     camera
-    player)
+    player
+    userInput)
 
 
 

@@ -35,12 +35,6 @@ void destroyWindow();
 void updateWindow();
 
 /**
- * Checks if key is pressed. Info about key press
- * updating on updateWindow() call.
- */
-bool isKeyPressed(int key);
-
-/**
  * Checks if window recived a close call.
  */
 bool isWindowClosed();

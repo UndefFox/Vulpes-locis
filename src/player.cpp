@@ -5,6 +5,7 @@
 #include "systems/components/playerData.h"
 #include "systems/components/transformation.h"
 #include "Window/include/window.h"
+#include "userInput.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -29,18 +30,18 @@ void execute(Entity& entity) {
     playerTransform->velocity.x = 0;
     playerTransform->velocity.y = 0;
 
-    if (Window::isKeyPressed(GLFW_KEY_W)) {
+    if (UserInput::getKeyState(KEY_W) == UserInput::KeyState::HOLD) {
         playerTransform->velocity.x += PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
         playerTransform->velocity.y += PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
-    } else if (Window::isKeyPressed(GLFW_KEY_S)) {
+    } else if (UserInput::getKeyState(KEY_S) == UserInput::KeyState::HOLD) {
         playerTransform->velocity.x += -PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
         playerTransform->velocity.y += -PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
     } 
     
-    if (Window::isKeyPressed(GLFW_KEY_A)) {
+    if (UserInput::getKeyState(KEY_A) == UserInput::KeyState::HOLD) {
         playerTransform->velocity.x += -PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
         playerTransform->velocity.y += PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
-    } else if (Window::isKeyPressed(GLFW_KEY_D)) {
+    } else if (UserInput::getKeyState(KEY_D) == UserInput::KeyState::HOLD) {
         playerTransform->velocity.x += PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
         playerTransform->velocity.y += -PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
     }
@@ -50,7 +51,7 @@ void execute(Entity& entity) {
         faled = true;
     }
 
-    if (Window::isKeyPressed(GLFW_KEY_SPACE) && faled && std::abs(playerTransform->velocity.z) < 0.1f) {
+    if (UserInput::getKeyState(KEY_SPACE) == UserInput::KeyState::PRESS && faled && std::abs(playerTransform->velocity.z) < 0.1f) {
         playerTransform->velocity.z = 20.0f;
         faled = false;
     }

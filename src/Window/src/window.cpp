@@ -49,10 +49,6 @@ void updateWindow() {
     yMouseLastPos = yPos;
 }
 
-bool isKeyPressed(int key) {
-    return glfwGetKey(currentWindow, key);
-}
-
 bool isWindowClosed() {
     return glfwWindowShouldClose(currentWindow);
 }

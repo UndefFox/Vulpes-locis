@@ -15,6 +15,9 @@ add_library(stringUtils stringutils.cpp)
 add_library(player player.cpp)
 add_library(camera camera.cpp)
 
+add_library(vector3 types/vector3.cpp)
+add_library(mat3x3 types/mat3x3.cpp)
+
 add_library(userInput userInput.cpp)
 target_link_libraries(userInput PUBLIC
     window)
@@ -28,7 +31,8 @@ target_link_libraries(sysPhysicsEngine PUBLIC
     module_ECS)
 add_library(sysRenderEngine systems/renderengine.cpp)
 target_link_libraries(sysRenderEngine PUBLIC
-    module_RenderEngine)
+    module_RenderEngine
+    module_ECS)
 add_library(sysMono systems/monoSystem.cpp)
 
 # Interfce libriries:
@@ -44,7 +48,9 @@ target_link_libraries(core PUBLIC
     window
     camera
     player
-    userInput)
+    userInput
+    vector3
+    mat3x3)
 
 
 

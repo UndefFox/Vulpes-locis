@@ -4,15 +4,16 @@
 
 #include "systems/components/playerData.h"
 #include "systems/components/transformation.h"
+#include "systems/components/physicsData.h"
 #include "Window/include/window.h"
 #include "userInput.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#define PLAYER_WALK_SPEED_MPS 15.0f
-#define PLAYER_TURN_HORIZONTAL_SPEED_DPS 0.5f
-#define PLAYER_TURN_VERTICAL_SPEED_DPS 0.2f
+#define PLAYER_WALK_SPEED_MPS 0.04f
+#define PLAYER_TURN_HORIZONTAL_SPEED_DPS 0.1f / 180.0f * M_PI
+#define PLAYER_TURN_VERTICAL_SPEED_DPS 0.2f / 180.0f * M_PI
 
 namespace Player {
 
@@ -24,52 +25,53 @@ void execute(Entity& entity) {
     Entity* camera = ECS::getEntity(playerData->cameraObjectId);
 
     Transformation* playerTransform = entity.getComponent<Transformation>();
+    PhysicsData* playerPhys = entity.getComponent<PhysicsData>();
 
     float timeCof = Window::lastFrameTimeDuration / 1000.0f;
 
-    playerTransform->velocity.x = 0;
-    playerTransform->velocity.y = 0;
+    //playerPhys->velocity.x = 0;
+    //playerPhys->velocity.y = 0;
 
     if (UserInput::getKeyState(KEY_W) == UserInput::KeyState::HOLD) {
-        playerTransform->velocity.x += PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
-        playerTransform->velocity.y += PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerPhys->velocity.x += PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.z);
+        playerPhys->velocity.y += PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.z);
     } else if (UserInput::getKeyState(KEY_S) == UserInput::KeyState::HOLD) {
-        playerTransform->velocity.x += -PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
-        playerTransform->velocity.y += -PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerPhys->velocity.x += -PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.z);
+        playerPhys->velocity.y += -PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.z);
     } 
     
     if (UserInput::getKeyState(KEY_A) == UserInput::KeyState::HOLD) {
-        playerTransform->velocity.x += -PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
-        playerTransform->velocity.y += PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerPhys->velocity.x += -PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.z);
+        playerPhys->velocity.y += PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.z);
     } else if (UserInput::getKeyState(KEY_D) == UserInput::KeyState::HOLD) {
-        playerTransform->velocity.x += PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
-        playerTransform->velocity.y += -PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
+        playerPhys->velocity.x += PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.z);
+        playerPhys->velocity.y += -PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.z);
     }
 
     static bool faled = true;
-    if (playerTransform->velocity.z < 0) {
+    if (playerPhys->velocity.z < 0) {
         faled = true;
     }
 
-    if (UserInput::getKeyState(KEY_SPACE) == UserInput::KeyState::PRESS && faled && std::abs(playerTransform->velocity.z) < 0.1f) {
-        playerTransform->velocity.z = 20.0f;
+    if (UserInput::getKeyState(KEY_SPACE) == UserInput::KeyState::PRESS && faled && std::abs(playerPhys->velocity.z) < 0.1f) {
+        playerPhys->velocity.z = 20.0f;
         faled = false;
     }
 
     
-    playerTransform->rotation.yaw -= PLAYER_TURN_HORIZONTAL_SPEED_DPS * Window::xMouseMove;
+    playerTransform->rotation.z -= PLAYER_TURN_HORIZONTAL_SPEED_DPS * Window::xMouseMove;
     
 
     Transformation* cameraTransform = camera->getComponent<Transformation>();
-    (*cameraTransform).pos = (*playerTransform).pos;
-    cameraTransform->pos.x -= 5.0f * std::cos(playerTransform->rotation.yaw / 180.0f * M_PI);
-    cameraTransform->pos.y -= 5.0f * std::sin(playerTransform->rotation.yaw / 180.0f * M_PI);
-    cameraTransform->pos.z += 2.5f + 2.5f * std::sin(cameraTransform->rotation.pitch / 180 * M_PI);
+    (*cameraTransform).position = (*playerTransform).position;
+    cameraTransform->position.x -= 5.0f * std::cos(playerTransform->rotation.z);
+    cameraTransform->position.y -= 5.0f * std::sin(playerTransform->rotation.z);
+    cameraTransform->position.z += 2.5f * std::sin(cameraTransform->rotation.y);
     
 
-    cameraTransform->rotation.yaw = playerTransform->rotation.yaw;
-    cameraTransform->rotation.pitch += PLAYER_TURN_VERTICAL_SPEED_DPS * Window::yMouseMove;
-    cameraTransform->rotation.roll = 0.0f;
+    cameraTransform->rotation.z = playerTransform->rotation.z;
+    cameraTransform->rotation.y += PLAYER_TURN_VERTICAL_SPEED_DPS * Window::yMouseMove;
+    cameraTransform->rotation.x = 0.0f;
 
 }
 

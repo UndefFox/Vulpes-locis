@@ -1,29 +1,12 @@
 #ifndef H_TRANSFORMATION_COMPONENT
 #define H_TRANSFORMATION_COMPONENT
 
+#include "types/vector3.h"
+
 struct Transformation
 {
-    struct Position
-    {
-        float x;
-        float y;
-        float z;
-    } pos;
-    
-    struct Rotation {
-        float roll;
-        float pitch;
-        float yaw;
-    } rotation;
-
-    bool isStatic = false;
-
-    struct Velocity {
-        float x;
-        float y;
-        float z;
-    } velocity;
-
+    ct::Vector3 position;
+    ct::Vector3 rotation;
 };
 
 

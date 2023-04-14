@@ -36,12 +36,12 @@ void execute() {
 
         RenderEngine::DrawCall drawCall{};
         drawCall.meshId = renderData->meshId;
-        drawCall.position[0] = transform->pos.x;
-        drawCall.position[1] = transform->pos.y;
-        drawCall.position[2] = transform->pos.z;
-        drawCall.rotation[0] = transform->rotation.roll;
-        drawCall.rotation[1] = transform->rotation.pitch;
-        drawCall.rotation[2] = transform->rotation.yaw;
+        drawCall.position[0] = transform->position.x;
+        drawCall.position[1] = transform->position.y;
+        drawCall.position[2] = transform->position.z;
+        drawCall.rotation[0] = transform->rotation.x;
+        drawCall.rotation[1] = transform->rotation.y;
+        drawCall.rotation[2] = transform->rotation.z;
 
         RenderEngine::addDrawCall(drawCall);
 

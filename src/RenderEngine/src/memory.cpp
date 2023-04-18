@@ -1,8 +1,8 @@
-#include "RenderEngine/src/include/memory.h"
+#include "memory.h"
 
 #include <cstring>
 
-#include "RenderEngine/src/include/values.h"
+#include "values.h"
 
 namespace RenderEngine {
 

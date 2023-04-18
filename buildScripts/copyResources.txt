@@ -1,0 +1,3 @@
+# Copying all resources to build directory.
+
+# Objects:

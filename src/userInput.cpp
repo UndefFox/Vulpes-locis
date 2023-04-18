@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Window/include/window.h"
+#include "window.h"
 
 #define KEY_COUNT 6
 

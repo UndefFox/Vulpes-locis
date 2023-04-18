@@ -1,7 +1,7 @@
-#include "RenderEngine/src/include/image.h"
+#include "image.h"
 
-#include "RenderEngine/src/include/values.h"
-#include "RenderEngine/src/include/memory.h"
+#include "values.h"
+#include "memory.h"
 
 namespace RenderEngine {
 

@@ -21,18 +21,19 @@ target_link_libraries(valuesfactory PUBLIC
     image
     io)
 
-add_library(storage src/storage.cpp)
+
+add_library(storage storage.cpp)
 target_link_libraries(storage PUBLIC
     memory
     values
     vulkan)
 
-add_library(configurator src/configurator.cpp)
+add_library(configurator configurator.cpp)
 target_link_libraries(configurator PUBLIC
     glfw3
     valuesfactory)
 
-add_library(renderer src/renderer.cpp)
+add_library(renderer renderer.cpp)
 target_link_libraries(renderer PUBLIC
     vulkan)
 

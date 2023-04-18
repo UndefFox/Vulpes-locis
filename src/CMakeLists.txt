@@ -3,17 +3,20 @@ include_directories(.)
 add_executable(vulpeslocis main.cpp)
 
 #Load modules:
-add_subdirectory(shaders)
+add_subdirectory(Shaders)
 add_subdirectory(ECS)
 add_subdirectory(RenderEngine)
-add_subdirectory(Window)
 
 # Libriries:
 
 add_library(typeConverters typeConverters.cpp)
 add_library(stringUtils stringutils.cpp)
-add_library(player player.cpp)
-add_library(camera camera.cpp)
+add_library(player entities/player.cpp)
+add_library(camera entities/camera.cpp)
+
+add_library(window window.cpp)
+target_link_libraries(window PUBLIC
+    glfw3)
 
 add_library(vector3 types/vector3.cpp)
 add_library(mat3x3 types/mat3x3.cpp)
@@ -26,14 +29,7 @@ add_library(fileLoaders fileLoaders.cpp)
 target_link_libraries(fileLoaders PUBLIC
     stringUtils)
 
-add_library(sysPhysicsEngine systems/physicsengine.cpp)
-target_link_libraries(sysPhysicsEngine PUBLIC
-    module_ECS)
-add_library(sysRenderEngine systems/renderengine.cpp)
-target_link_libraries(sysRenderEngine PUBLIC
-    module_RenderEngine
-    module_ECS)
-add_library(sysMono systems/monoSystem.cpp)
+
 
 # Interfce libriries:
 add_library(core core.cpp)

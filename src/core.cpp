@@ -1,24 +1,24 @@
 #include <GLFW/glfw3.h>
 
-#include "RenderEngine/include/configurator.h"
-#include "RenderEngine/include/renderer.h"
-#include "RenderEngine/include/storage.h"
+#include "RenderEngine/configurator.h"
+#include "RenderEngine/renderer.h"
+#include "RenderEngine/storage.h"
 
-#include "ECS/include/ECS.h"
-#include "systems/components/renderdata.h"
-#include "systems/components/transformation.h"
-#include "systems/components/mono.h"
-#include "systems/components/playerData.h"
-#include "systems/components/colider.h"
-#include "systems/components/physicsData.h"
-#include "systems/physicsengine.h"
-#include "systems/renderengine.h"
-#include "systems/monoSystem.h"
-#include "player.h"
-#include "camera.h"
+#include "ECS/ECS.h"
+#include "ECS/components/renderdata.h"
+#include "ECS/components/transformation.h"
+#include "ECS/components/mono.h"
+#include "ECS/components/playerData.h"
+#include "ECS/components/colider.h"
+#include "ECS/components/physicsData.h"
+#include "ECS/systems/physics.h"
+#include "ECS/systems/render.h"
+#include "ECS/systems/mono.h"
+#include "entities/player.h"
+#include "entities/camera.h"
 #include "userInput.h"
 
-#include "Window/include/window.h"
+#include "window.h"
 
 #include "fileLoaders.h"
 
@@ -36,15 +36,13 @@ bool isGameInterupted() {
     return Window::isWindowClosed() || UserInput::getKeyHoldDuration(KEY_ESC) > 2000.0f;
 }
 
-void runSystems() {
-    //if (UserInput::getKeyState(KEY_W) == UserInput::KeyState::PRESS || UserInput::getKeyHoldDuration(KEY_W) > 200.0f) 
-        
-    PhysicsEngineSystem::execute();
+void runSystems() {     
+    PhysicsSystem::execute();
     MonoSystem::execute();
-    RenderEngineSystem::execute();
+    RenderSystem::execute();
     
 
-    RenderEngineSystem::postExecute();
+    RenderSystem::postExecute();
 }
 
 } // namespace <anonymous>
@@ -55,8 +53,6 @@ void initializate() {
 }
 
 void setupInitialState() {
-    //ct::Vector3 test = ct::transform({-0.990329802f, 0.0853462294f, -0.109375007f}, {0.0f, 0.0f, 0.0f}, {2.47900581f, 1.43160808f, 0});
-
     
 #ifdef RENDERTEST_SETUP_ON
     // Test setup
@@ -108,7 +104,7 @@ void setupInitialState() {
 
     RenderData* playerRenderData = new RenderData{};
     playerRenderData->meshId = 2;
-    //playerEntity->addComponent<RenderData>(playerRenderData);
+    playerEntity->addComponent<RenderData>(playerRenderData);
 
     Transformation* trans1 = new Transformation{};
     trans1->position = { 6.0f, 0.0f, 6.0f };

@@ -20,6 +20,11 @@ namespace FileLoaders {
  */
 Object loadObjectFile(std::string filename);
 
+/**
+ * Load code from spv files into code vector.
+ */
+void loadShaderFile(std::string filename, std::vector<char>& code);
+
 }
 
 #endif

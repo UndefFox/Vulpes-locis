@@ -9,23 +9,23 @@
 namespace RenderEngine {
 
 void configurateRender(Configuration& configuration) {
-    currentConfiguration = configuration;
 
-    setPhysicalDevice();
-    createSurface();
+    setPhysicalDevice(configuration.deviceId);
+    createSurface(configuration.window);
     createDevice();
     updateSwapchainConfiguration();
     createRenderPass();
     createDescriptorSetLayout();
     createGraphicsPipelineLayout();
-    createGraphicsPipeline();
+    createGraphicsPipeline(configuration.verticesShaderCode, configuration.fragmentShaderCode);
     createCommandPool();
     createCommandBuffer();
-    createBuffers();
+    createBuffers(configuration.memoryAmount);
     createDescriptorPool();
     createDescriptorSet();
     createSyncObjects();
-    createSwapchain();
+
+    createSwapchainR(configuration.window);
     createDepthResources();
     createFramebuffers();
 }

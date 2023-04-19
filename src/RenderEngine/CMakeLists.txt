@@ -12,14 +12,11 @@ add_library(image src/image.cpp)
 target_link_libraries(image PUBLIC
     values)
 
-add_library(io src/io.cpp)
-
 add_library(valuesfactory src/valuesfactory.cpp)
 target_link_libraries(valuesfactory PUBLIC
     values
     memory
-    image
-    io)
+    image)
 
 
 add_library(storage storage.cpp)

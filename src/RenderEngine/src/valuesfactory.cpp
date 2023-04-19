@@ -11,12 +11,11 @@
 
 #include "image.h"
 #include "memory.h"
-#include "io.h"
 #include "values.h"
 
 namespace RenderEngine {
 
-Configuration currentConfiguration{};
+//Configuration currentConfiguration{};
 
 namespace {
 
@@ -94,8 +93,8 @@ void destroyVulkanInstance() {
 }
 
 
-void createSurface() {
-    glfwCreateWindowSurface(vulkanInstance, currentConfiguration.window, nullptr, &surfaceKHR);
+void createSurface(GLFWwindow* window) {
+    glfwCreateWindowSurface(vulkanInstance, window, nullptr, &surfaceKHR);
 }
 
 void destroySurface() {
@@ -159,12 +158,12 @@ bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device, VkSurfaceKHR testSurfac
 }
 
 
-void setPhysicalDevice() {
+void setPhysicalDevice(unsigned int deviceId) {
     for (VkPhysicalDevice device : getAvailablePhysicalDevices()) {
         VkPhysicalDeviceProperties properties{};
         vkGetPhysicalDeviceProperties(device, &properties);
 
-        if (currentConfiguration.deviceId == properties.deviceID) {
+        if (deviceId == properties.deviceID) {
             physcialDevice = device;
         }
     }
@@ -247,7 +246,14 @@ void updateSwapchainConfiguration() {
 }
 
 
-void createSwapchain() {
+void createSwapchainR(GLFWwindow* newWindow) {
+    static GLFWwindow* window;
+
+    if (newWindow != nullptr) {
+        window = newWindow;
+    }
+
+
     VkSurfaceCapabilitiesKHR capabilities;
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physcialDevice, surfaceKHR, &capabilities);
 
@@ -277,7 +283,7 @@ void createSwapchain() {
         swapchainCreateInfo.imageExtent = capabilities.currentExtent;
     } else {
         int width, height;
-        glfwGetFramebufferSize(currentConfiguration.window, &width, &height);
+        glfwGetFramebufferSize(window, &width, &height);
 
         VkExtent2D actualExtent = {
             static_cast<uint32_t>(width),
@@ -470,13 +476,7 @@ void destroyGraphicsPipelineLayout() {
 }
 
 
-void createGraphicsPipeline() {
-    std::vector<char> vertShader;
-    std::vector<char> fragShader;
-
-    loadShaderFile(currentConfiguration.verticesShaderPath, vertShader);
-    loadShaderFile(currentConfiguration.fragmentShaderPath, fragShader);
-
+void createGraphicsPipeline(std::vector<char> vertShader, std::vector<char> fragShader) {
     VkShaderModule vertModule{};
     VkShaderModule fragModule{};
 
@@ -659,13 +659,13 @@ void destroyDepthResources() {
 }
 
 
-void createBuffers() {
+void createBuffers(size_t memoryAmount) {
     VkDeviceSize bufferSize;
 
-    bufferSize = (currentConfiguration.memoryAmount / sizeof(Vertex)) / 2 * sizeof(Vertex);
+    bufferSize = (memoryAmount / sizeof(Vertex)) / 2 * sizeof(Vertex);
     createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 
-    bufferSize = (currentConfiguration.memoryAmount / sizeof(uint16_t)) / 2 * sizeof(uint16_t);
+    bufferSize = (memoryAmount / sizeof(uint16_t)) / 2 * sizeof(uint16_t);
     createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 
     bufferSize = sizeof(UniformBufferObject);

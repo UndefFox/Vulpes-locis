@@ -34,8 +34,7 @@ void destroyWindow() {
 void updateWindow() {
     glfwPollEvents();
 
-    //lastFrameTimeDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastFrameTime).count();
-    lastFrameTimeDuration = 1.0f / 60.0f * 1000.0f;
+    lastFrameTimeDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastFrameTime).count();
     lastFrameTime = std::chrono::system_clock::now();
 
     double xPos = 0.0f;

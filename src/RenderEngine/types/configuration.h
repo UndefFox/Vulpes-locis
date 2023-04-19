@@ -21,14 +21,14 @@ struct Configuration {
     size_t memoryAmount;
 
     /**
-     * Path to vertices spv shader file.
+     * Data of vertices spv shader file.
      */
-    std::string verticesShaderPath;
+    std::vector<char> verticesShaderCode;
 
     /**
-     * Path to fragment spv shader file.
+     * Data of fragment spv shader file.
      */
-    std::string fragmentShaderPath;
+    std::vector<char> fragmentShaderCode;
 };
 
 }

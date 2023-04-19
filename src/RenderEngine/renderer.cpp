@@ -102,7 +102,7 @@ void drawFrame() {
 
         destroyDepthResources();
         destroySwapchain();
-        createSwapchain();
+        createSwapchainR();
         createDepthResources();
         createFramebuffers();
 
@@ -149,7 +149,7 @@ void drawFrame() {
 
         destroyDepthResources();
         destroySwapchain();
-        createSwapchain();
+        createSwapchainR();
         createDepthResources();
         createFramebuffers();
 

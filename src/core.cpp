@@ -66,8 +66,8 @@ void setupInitialState() {
     
     renderConf.deviceId = infos[0].deviceId;
     renderConf.window = window;
-    renderConf.verticesShaderPath = "shaders/vertical.spv";
-    renderConf.fragmentShaderPath = "shaders/fragment.spv";
+    FileLoaders::loadShaderFile("shaders/vertical.spv", renderConf.verticesShaderCode);
+    FileLoaders::loadShaderFile("shaders/fragment.spv", renderConf.fragmentShaderCode);
     renderConf.memoryAmount = 1024 * 1024;
 
     RenderEngine::configurateRender(renderConf);

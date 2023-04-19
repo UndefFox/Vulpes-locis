@@ -14,7 +14,7 @@ namespace RenderEngine {
  * Configuration acording to wich all create functions will be
  * creating values. 
  */
-extern Configuration currentConfiguration;
+//extern Configuration currentConfiguration;
 
 void createVulkanInstance();
 void destroyVulkanInstance();
@@ -22,7 +22,7 @@ void destroyVulkanInstance();
 /**
  * Creating surface for a window.
  */
-void createSurface();
+void createSurface(GLFWwindow* window);
 
 void destroySurface();
 
@@ -45,7 +45,7 @@ std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
 bool minimuPhysicalDeviceCheck(VkPhysicalDevice& device, VkSurfaceKHR testSurface);
 
 
-void setPhysicalDevice();
+void setPhysicalDevice(unsigned int deviceId);
 
 
 void createDevice();
@@ -53,7 +53,11 @@ void destroyDevice();
 
 void updateSwapchainConfiguration();
 
-void createSwapchain();
+/**
+ *  Recuring create swapchain function. If parameters are not passed,
+ *  then last passed value is used.
+ */
+void createSwapchainR(GLFWwindow* newWindow = nullptr);
 void destroySwapchain();
 
 void createFramebuffers();
@@ -66,7 +70,7 @@ void createDescriptorSetLayout();
 void createGraphicsPipelineLayout();
 void destroyGraphicsPipelineLayout();
 
-void createGraphicsPipeline();
+void createGraphicsPipeline(std::vector<char> vertShader, std::vector<char> fragShader);
 void destroyGraphicsPipeline();
 
 void createCommandPool();
@@ -77,7 +81,7 @@ void createCommandBuffer();
 void createDepthResources();
 void destroyDepthResources();
 
-void createBuffers();
+void createBuffers(size_t memoryAmount);
 void destroyBuffers();
 
 void createDescriptorPool();

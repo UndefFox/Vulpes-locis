@@ -8,6 +8,16 @@
 
 #include "../types/configuration.h"
 
+/**
+ * \file
+ * \brief All functionality for values initialization.
+ * 
+ * Implements all functions that allows to create all values
+ * from values file.
+ * 
+ * \ingroup RenderSource
+ */
+
 namespace RenderEngine {
 
 /**

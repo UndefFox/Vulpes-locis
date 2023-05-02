@@ -3,6 +3,15 @@
 
 #include "entity.h"
 
+/**
+ * \defgroup ECS
+ * \brief Entity Component System
+ */
+
+/**
+ * \brief Contain all ECS system components.
+ * \ingroup ECS
+ */
 namespace ECS {
 
     /**

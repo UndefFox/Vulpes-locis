@@ -4,6 +4,15 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
+/**
+ * \file
+ * \brief All functionality for images.
+ * 
+ * Implements all functionality for manipulation images.
+ * 
+ * \ingroup RenderSource
+ */
+
 namespace RenderEngine {
 
 void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);

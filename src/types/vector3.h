@@ -1,12 +1,28 @@
 #ifndef H_TYPES_VECTOR3
 #define H_TYPES_VECTOR3
 
+/**
+ * \defgroup Types
+ * \brief All custom types presented in a project.
+ */
 
 /**
- * 'Custom type' - namespace of all custom project types
+ * \brief Namespace of all custom project types.
+ * 
+ * Contains custom types and operations on them.
+ * 
+ * \ingroup Types
  */
 namespace ct {
 
+/**
+ * \brief A math vector.
+ * 
+ * Represents a trigonometrical vector, or in other words,
+ * a set of 3 float numbers.
+ * 
+ * \ingroup Types
+ */
 class Vector3 {
 public:
     float x = 0.0f;

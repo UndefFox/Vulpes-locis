@@ -3,6 +3,16 @@
 
 #include <vulkan/vulkan.h>
 
+/**
+ * \file
+ * \brief All functionality for memory.
+ * 
+ * Implements all functionality for manipulation and controlling 
+ * memory used by engine.
+ * 
+ * \ingroup RenderSource
+ */
+
 namespace RenderEngine {
 
 void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);

@@ -5,7 +5,14 @@
 #include <vector>
 
 
-
+/**
+ * \brief Single item in the world.
+ * 
+ * Represents single thing in a game world with
+ * components and stores it.
+ * 
+ * \ingroup ECS
+ */
 class Entity {
 
 

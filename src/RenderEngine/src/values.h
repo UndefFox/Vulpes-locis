@@ -6,7 +6,13 @@
 #include <vector>
 
 /**
- * @file Definde all static variable used across library files.
+ * \file
+ * \brief All static variables.
+ * 
+ * Contain all static variables used across source files of
+ * engine.
+ * 
+ * \ingroup RenderSource
  */
 
 namespace RenderEngine {

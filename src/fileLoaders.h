@@ -6,6 +6,12 @@
 
 #include <string>
 
+/**
+ * \brief File loader functions
+ * 
+ * Implements function to load all file types used in
+ * a project.
+ */
 namespace FileLoaders {
 
 /**

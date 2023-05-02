@@ -1,6 +1,9 @@
 #ifndef H_CORE
 #define H_CORE
 
+/**
+ * Core of the game that controll its execution.
+ */
 namespace Core {
 
 /**

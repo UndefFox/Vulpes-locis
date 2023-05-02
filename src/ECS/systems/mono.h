@@ -4,7 +4,12 @@
 #include "ECS/entity.h"
 
 /**
- * System for executing not widly used scripts like: Player, Camera.
+ * \brief A mono system.
+ * 
+ * Executes more complex bihaviour. Moslty used for executing
+ * entity components.
+ * 
+ * \ingroup Systems
  */
 namespace MonoSystem {
 

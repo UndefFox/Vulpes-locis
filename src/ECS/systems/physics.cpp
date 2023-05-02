@@ -12,7 +12,6 @@
 
 #include "types/vector3.h"
 
-#include "window.h"
 
 namespace PhysicsSystem
 {
@@ -286,13 +285,13 @@ namespace PhysicsSystem
                 if (!phys->isStatic)
                 {
 
-                    phys->velocity += phys->aceleration * Window::lastFrameTimeDuration / 1000.0f;
-                    phys->velocity *= 1.0f - 0.50f * Window::lastFrameTimeDuration / 1000.0f;
-                    trans->position += phys->velocity * Window::lastFrameTimeDuration / 1000.0f;
+                    phys->velocity += phys->aceleration * 0.01;
+                    phys->velocity *= 1.0f - 0.50f * 0.01;
+                    trans->position += phys->velocity * 0.01;
 
-                    phys->angularSpeed += phys->angularAceleration * Window::lastFrameTimeDuration / 1000.0f;
-                    phys->angularSpeed *= 1.0f - 0.50f * Window::lastFrameTimeDuration / 1000.0f;
-                    trans->rotation += phys->angularSpeed * Window::lastFrameTimeDuration / 1000.0f;
+                    phys->angularSpeed += phys->angularAceleration * 0.01;
+                    phys->angularSpeed *= 1.0f - 0.50f * 0.01;
+                    trans->rotation += phys->angularSpeed * 0.01;
                 }
             }
         }

@@ -9,6 +9,16 @@
 #include "types/configuration.h"
 #include "types/deviceInfo.h"
 
+/**
+ * \file
+ * \brief All functionality for configuring render.
+ * 
+ * Implements all functionality for configuring render like resolution,
+ * presentaion target, render settings and etc.
+ * 
+ * \ingroup RenderInterface
+ */
+
 namespace RenderEngine {
 
 /**

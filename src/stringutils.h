@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 
+/**
+ * \brief Operation for strings.
+ */
 namespace StringUtils {
 
 /**

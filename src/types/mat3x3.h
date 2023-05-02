@@ -7,6 +7,11 @@
 
 namespace ct {
 
+/**
+ * \brief Matrix 3 by 3.
+ * 
+ * \ingroup Types
+ */
 class Mat3x3 {
     std::array<float, 9> elements{};
 

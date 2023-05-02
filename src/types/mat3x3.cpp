@@ -30,8 +30,6 @@ Vector3 Mat3x3::operator*(const Vector3 mult) {
     output.y = (elements[3] * mult.x) + (elements[4] * mult.y) + (elements[5] * mult.z);
     output.z = (elements[6] * mult.x) + (elements[7] * mult.y) + (elements[8] * mult.z);
 
-//-0.46286
-//0.61844
     return output;
 }
 

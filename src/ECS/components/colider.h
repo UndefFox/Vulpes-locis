@@ -4,6 +4,9 @@
 #include <vector>
 #include "types/vector3.h"
 
+/**
+ * \ingroup Components
+ */
 enum ColiderType {
     Sphere,
     Box,

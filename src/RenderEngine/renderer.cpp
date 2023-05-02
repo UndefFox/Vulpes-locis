@@ -10,10 +10,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstring>
+#include <chrono>
 
 namespace RenderEngine {
 
+double lastFrameDuration = 0.0f;
+
 namespace {
+
+std::chrono::time_point<std::chrono::system_clock> lastFrameTime;
 
 std::vector<DrawCall> drawCalls{};
 
@@ -155,7 +160,8 @@ void drawFrame() {
 
     }
 
-    
+    lastFrameDuration = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastFrameTime).count();
+    lastFrameTime = std::chrono::system_clock::now();
 
     drawCalls.clear();
 }

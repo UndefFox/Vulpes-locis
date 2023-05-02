@@ -7,6 +7,9 @@
 #include <array>
 #include <math.h>
 
+/**
+ * \ingroup Components
+ */
 struct PhysicsData {
 
 ct::Vector3 velocity{};

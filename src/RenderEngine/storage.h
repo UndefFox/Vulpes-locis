@@ -3,6 +3,16 @@
 
 #include "RenderEngine/types/mesh.h"
 
+/**
+ * \file
+ * \brief All functionality for storing assets.
+ * 
+ * Implements all functionality for storing assets that will
+ * be used for rendring: meshes, textures, materials and etc.
+ * 
+ * \ingroup RenderInterface
+ */
+
 namespace RenderEngine {
 
 /**

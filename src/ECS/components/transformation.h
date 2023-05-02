@@ -3,6 +3,18 @@
 
 #include "types/vector3.h"
 
+/**
+ * \defgroup Components
+ * 
+ * \brief Contain all compoents.
+ * 
+ * \ingroup ECS
+ */
+
+
+/**
+ * \ingroup Components
+ */
 struct Transformation
 {
     ct::Vector3 position;

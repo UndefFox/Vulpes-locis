@@ -3,6 +3,7 @@
 
 
 #include <GLFW/glfw3.h>
+#include <array>
 #include <chrono>
 
 
@@ -13,11 +14,7 @@
  */
 namespace Window {
 
-extern float lastFrameTimeDuration;
-extern std::chrono::time_point<std::chrono::system_clock> lastFrameTime;
-
-extern float xMouseMove;
-extern float yMouseMove;
+extern bool isCursorLocked;
 
 /**
  * Creates new widnow with preseted settings.

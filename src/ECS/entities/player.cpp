@@ -5,8 +5,8 @@
 #include "ECS/components/playerData.h"
 #include "ECS/components/transformation.h"
 #include "ECS/components/physicsData.h"
-#include "window.h"
-#include "userInput.h"
+#include "controlls.h"
+#include "RenderEngine/renderer.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -27,23 +27,23 @@ void execute(Entity& entity) {
     Transformation* playerTransform = entity.getComponent<Transformation>();
     PhysicsData* playerPhys = entity.getComponent<PhysicsData>();
 
-    float timeCof = Window::lastFrameTimeDuration / 1000.0f;
+    float timeCof = RenderEngine::lastFrameDuration / 1000.0f;
 
     //playerPhys->velocity.x = 0;
     //playerPhys->velocity.y = 0;
 
-    if (UserInput::getKeyState(KEY_W) == UserInput::KeyState::HOLD) {
+    if (Controlls::getKeyState(Controlls::Key::W) == Controlls::KeyState::HOLD) {
         playerPhys->velocity.x += PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.z);
         playerPhys->velocity.y += PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.z);
-    } else if (UserInput::getKeyState(KEY_S) == UserInput::KeyState::HOLD) {
+    } else if (Controlls::getKeyState(Controlls::Key::S) == Controlls::KeyState::HOLD) {
         playerPhys->velocity.x += -PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.z);
         playerPhys->velocity.y += -PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.z);
     } 
     
-    if (UserInput::getKeyState(KEY_A) == UserInput::KeyState::HOLD) {
+    if (Controlls::getKeyState(Controlls::Key::A) == Controlls::KeyState::HOLD) {
         playerPhys->velocity.x += -PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.z);
         playerPhys->velocity.y += PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.z);
-    } else if (UserInput::getKeyState(KEY_D) == UserInput::KeyState::HOLD) {
+    } else if (Controlls::getKeyState(Controlls::Key::D) == Controlls::KeyState::HOLD) {
         playerPhys->velocity.x += PLAYER_WALK_SPEED_MPS * std::sin(playerTransform->rotation.z);
         playerPhys->velocity.y += -PLAYER_WALK_SPEED_MPS * std::cos(playerTransform->rotation.z);
     }
@@ -53,13 +53,9 @@ void execute(Entity& entity) {
         faled = true;
     }
 
-    if (UserInput::getKeyState(KEY_SPACE) == UserInput::KeyState::PRESS && faled && std::abs(playerPhys->velocity.z) < 0.1f) {
-        playerPhys->velocity.z = 20.0f;
-        faled = false;
-    }
-
     
-    playerTransform->rotation.z -= PLAYER_TURN_HORIZONTAL_SPEED_DPS * Window::xMouseMove;
+    ct::Vector3 cursorDelta = Controlls::getMouseDelta();
+    playerTransform->rotation.z -= PLAYER_TURN_HORIZONTAL_SPEED_DPS * cursorDelta.x;
     
 
     Transformation* cameraTransform = camera->getComponent<Transformation>();
@@ -70,7 +66,7 @@ void execute(Entity& entity) {
     
 
     cameraTransform->rotation.z = playerTransform->rotation.z;
-    cameraTransform->rotation.y += PLAYER_TURN_VERTICAL_SPEED_DPS * Window::yMouseMove;
+    cameraTransform->rotation.y += PLAYER_TURN_VERTICAL_SPEED_DPS * cursorDelta.y;
     cameraTransform->rotation.x = 0.0f;
 
 }

@@ -11,8 +11,8 @@ add_subdirectory(RenderEngine)
 
 add_library(typeConverters typeConverters.cpp)
 add_library(stringUtils stringutils.cpp)
-add_library(player entities/player.cpp)
-add_library(camera entities/camera.cpp)
+add_library(player ECS/entities/player.cpp)
+add_library(camera ECS/entities/camera.cpp)
 
 add_library(window window.cpp)
 target_link_libraries(window PUBLIC
@@ -21,8 +21,8 @@ target_link_libraries(window PUBLIC
 add_library(vector3 types/vector3.cpp)
 add_library(mat3x3 types/mat3x3.cpp)
 
-add_library(userInput userInput.cpp)
-target_link_libraries(userInput PUBLIC
+add_library(controlls controlls.cpp)
+target_link_libraries(controlls PUBLIC
     window)
 
 add_library(fileLoaders fileLoaders.cpp)
@@ -44,7 +44,7 @@ target_link_libraries(core PUBLIC
     window
     camera
     player
-    userInput
+    controlls
     vector3
     mat3x3)
 

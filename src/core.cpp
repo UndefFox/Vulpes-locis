@@ -14,9 +14,9 @@
 #include "ECS/systems/physics.h"
 #include "ECS/systems/render.h"
 #include "ECS/systems/mono.h"
-#include "entities/player.h"
-#include "entities/camera.h"
-#include "userInput.h"
+#include "ECS/entities/player.h"
+#include "ECS/entities/camera.h"
+#include "controlls.h"
 
 #include "window.h"
 
@@ -33,7 +33,7 @@ namespace Core {
 namespace {
 
 bool isGameInterupted() {
-    return Window::isWindowClosed() || UserInput::getKeyHoldDuration(KEY_ESC) > 2000.0f;
+    return Window::isWindowClosed();
 }
 
 void runSystems() {     
@@ -243,15 +243,13 @@ void setupInitialState() {
     #endif
 }
 
-bool cState = true;
 void run() {
     while (!isGameInterupted()) {
         Window::updateWindow();
-        UserInput::updateKeyState();
+        Controlls::update();
 
-        if (UserInput::getKeyState(KEY_ESC) == UserInput::KeyState::PRESS) {
-            Window::setCursorLock(cState);
-            cState = !cState;
+        if (Controlls::getKeyState(Controlls::Key::ESC) == Controlls::KeyState::PRESS) {
+            Window::setCursorLock(!Window::isCursorLocked);
         }
 
         runSystems();

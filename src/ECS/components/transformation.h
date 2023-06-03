@@ -1,7 +1,7 @@
 #ifndef H_TRANSFORMATION_COMPONENT
 #define H_TRANSFORMATION_COMPONENT
 
-#include "types/vector3.h"
+#include "types/math/vector3.h"
 
 /**
  * \defgroup Components

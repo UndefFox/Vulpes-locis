@@ -18,8 +18,8 @@ add_library(window window.cpp)
 target_link_libraries(window PUBLIC
     glfw3)
 
-add_library(vector3 types/vector3.cpp)
-add_library(mat3x3 types/mat3x3.cpp)
+add_library(vector3 types/math/vector3.cpp)
+add_library(mat3x3 types/math/mat3x3.cpp)
 
 add_library(controlls controlls.cpp)
 target_link_libraries(controlls PUBLIC

@@ -1,7 +1,7 @@
 #ifndef H_FORMATERS_OBJECT
 #define H_FORMATERS_OBJECT
 
-#include "types/object.h"
+#include "types/files/object.h"
 
 
 #include <string>

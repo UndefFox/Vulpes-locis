@@ -1,7 +1,7 @@
 #ifndef H_CONTROLLS
 #define H_CONTROLLS
 
-#include "types/vector3.h"
+#include "types/math/vector3.h"
 
 
 /**

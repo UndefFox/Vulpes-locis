@@ -1,8 +1,8 @@
 #ifndef H_PHYSICSDATA
 #define H_PHYSICSDATA
 
-#include "types/vector3.h"
-#include "types/mat3x3.h"
+#include "types/math/vector3.h"
+#include "types/math/mat3x3.h"
 
 #include <array>
 #include <math.h>

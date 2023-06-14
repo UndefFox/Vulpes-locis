@@ -1,10 +1,9 @@
 #ifndef H_FORMATERS_OBJECT
 #define H_FORMATERS_OBJECT
 
-#include "object.h"
-
-
 #include <string>
+
+#include "types/objects/mesh.h"
 
 /**
  * \brief File loader functions
@@ -24,7 +23,7 @@ namespace FileLoaders {
  * 
  *  'f' - only v/vn/vt format
  */
-Object loadObjectFile(std::string filename);
+Mesh loadObjectFile(std::string filename);
 
 /**
  * Load code from spv files into code vector.

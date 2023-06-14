@@ -2,7 +2,7 @@
 #define H_COLIDER_COMPONENT
 
 #include <vector>
-#include "types/vector3.h"
+#include "types/math/vector3.h"
 
 /**
  * \ingroup Components

@@ -10,7 +10,7 @@
 
 #include "ECS/ECS.h"
 
-#include "types/vector3.h"
+#include "types/math/vector3.h"
 
 
 namespace PhysicsSystem

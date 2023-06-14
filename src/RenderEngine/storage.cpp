@@ -10,21 +10,23 @@
 
 namespace RenderEngine {
 
-int addMesh(Mesh& meshData) {
+int addMesh(Mesh& mesh) {
     savedObjects.push_back({});
 
-    std::vector<Vertex> vertices(meshData.vertices.size());
-    for (int i = 0; i < meshData.vertices.size(); i++) {
-        vertices[i].pos[0] = meshData.vertices[i][0];
-        vertices[i].pos[1] = meshData.vertices[i][1];
-        vertices[i].pos[2] = meshData.vertices[i][2];
+    std::vector<Vertex> vertices(mesh.vertices.size());
+    for (int i = 0; i < mesh.vertices.size(); i++) {
+        Vertice vertice = mesh.vertices[i];
 
-        vertices[i].texCoord[0] = meshData.vertices[i][3];
-        vertices[i].texCoord[1] = meshData.vertices[i][4];
+        vertices[i].pos[0] = vertice.cords.x;
+        vertices[i].pos[1] = vertice.cords.y;
+        vertices[i].pos[2] = vertice.cords.z;
 
-        vertices[i].normal[0] = meshData.vertices[i][5];
-        vertices[i].normal[1] = meshData.vertices[i][6];
-        vertices[i].normal[2] = meshData.vertices[i][7];
+        vertices[i].texCoord[0] = vertice.UV.x;
+        vertices[i].texCoord[1] = vertice.UV.y;
+
+        vertices[i].normal[0] = vertice.normal.x;
+        vertices[i].normal[1] = vertice.normal.y;
+        vertices[i].normal[2] = vertice.normal.z;
     }
 
     VkBuffer buffer;
@@ -57,8 +59,13 @@ int addMesh(Mesh& meshData) {
     vkDestroyBuffer(logicalDevice, buffer, nullptr);
     vkFreeMemory(logicalDevice, bufferMemory, nullptr);
 
-
-    size = meshData.indexes.size() * sizeof(uint16_t);
+    std::vector<int16_t> indexes{};
+    for (int i = 0; i < mesh.faces.size(); i++) {
+        indexes.push_back(mesh.faces[i].verticeIndexes[0]);
+        indexes.push_back(mesh.faces[i].verticeIndexes[1]);
+        indexes.push_back(mesh.faces[i].verticeIndexes[2]);
+    }
+    size = indexes.size() * sizeof(uint16_t);
 
     createBuffer(
         size,
@@ -69,7 +76,7 @@ int addMesh(Mesh& meshData) {
     );
 
     vkMapMemory(logicalDevice, bufferMemory, 0, size, 0, &data);
-        memcpy(data, meshData.indexes.data(), (size_t) size);
+        memcpy(data, indexes.data(), (size_t) size);
     vkUnmapMemory(logicalDevice, bufferMemory);
 
     copyBuffer(
@@ -79,8 +86,8 @@ int addMesh(Mesh& meshData) {
         indexSavedAmount * sizeof(uint16_t)
     );
     savedObjects[lastIndex].firstIndexIndex = indexSavedAmount;
-    savedObjects[lastIndex].indexAmount = meshData.indexes.size();
-    indexSavedAmount += meshData.indexes.size();
+    savedObjects[lastIndex].indexAmount = indexes.size();
+    indexSavedAmount += indexes.size();
 
     vkDestroyBuffer(logicalDevice, buffer, nullptr);
     vkFreeMemory(logicalDevice, bufferMemory, nullptr);

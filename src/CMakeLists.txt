@@ -9,7 +9,6 @@ add_subdirectory(RenderEngine)
 
 # Libriries:
 
-add_library(typeConverters typeConverters.cpp)
 add_library(stringUtils stringutils.cpp)
 add_library(player ECS/entities/player.cpp)
 add_library(camera ECS/entities/camera.cpp)
@@ -18,8 +17,9 @@ add_library(window window.cpp)
 target_link_libraries(window PUBLIC
     glfw3)
 
-add_library(vector3 types/vector3.cpp)
-add_library(mat3x3 types/mat3x3.cpp)
+add_library(vector2 types/math/vector2.cpp)
+add_library(vector3 types/math/vector3.cpp)
+add_library(mat3x3 types/math/mat3x3.cpp)
 
 add_library(controlls controlls.cpp)
 target_link_libraries(controlls PUBLIC
@@ -37,7 +37,6 @@ target_link_libraries(core PUBLIC
     module_RenderEngine
     module_ECS
     fileLoaders
-    typeConverters
     sysPhysicsEngine
     sysRenderEngine
     sysMono
@@ -45,6 +44,7 @@ target_link_libraries(core PUBLIC
     camera
     player
     controlls
+    vector2
     vector3
     mat3x3)
 

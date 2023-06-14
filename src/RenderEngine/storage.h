@@ -1,7 +1,7 @@
 #ifndef H_RENDERENGINE_STORAGE
 #define H_RENDERENGINE_STORAGE
 
-#include "RenderEngine/types/mesh.h"
+#include "types/objects/mesh.h"
 
 /**
  * \file

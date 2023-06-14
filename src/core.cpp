@@ -22,8 +22,6 @@
 
 #include "fileLoaders.h"
 
-#include "typeConverters.h"
-
 #include "core.h"
 
 #define RENDERTEST_SETUP_ON
@@ -72,22 +70,16 @@ void setupInitialState() {
 
     RenderEngine::configurateRender(renderConf);
 
-    Object sphere = FileLoaders::loadObjectFile("./resources/models/sphere.obj");
-    Object plane = FileLoaders::loadObjectFile("./resources/models/meterCube.obj");
-    Object meterCuber = FileLoaders::loadObjectFile("./resources/models/indexedCube.obj");
-    Object planet = FileLoaders::loadObjectFile("./resources/models/plane.obj");
+    Mesh sphere = FileLoaders::loadObjectFile("./resources/models/sphere.obj");
+    Mesh plane = FileLoaders::loadObjectFile("./resources/models/meterCube.obj");
+    Mesh meterCuber = FileLoaders::loadObjectFile("./resources/models/indexedCube.obj");
+    Mesh planet = FileLoaders::loadObjectFile("./resources/models/plane.obj");
 
-    RenderEngine::Mesh sphereMesh = TypeConverters::objectToMesh(sphere);
-    RenderEngine::Mesh planeMesh = TypeConverters::objectToMesh(plane);
-    RenderEngine::Mesh meterCuberMesh = TypeConverters::objectToMesh(meterCuber);
-    RenderEngine::Mesh planeTMesh = TypeConverters::objectToMesh(planet);
-
-    RenderEngine::addMesh(sphereMesh);
-    RenderEngine::addMesh(planeMesh);
-    RenderEngine::addMesh(meterCuberMesh);
-    RenderEngine::addMesh(planeTMesh);
+    RenderEngine::addMesh(sphere);
+    RenderEngine::addMesh(plane);
+    RenderEngine::addMesh(meterCuber);
+    RenderEngine::addMesh(planet);
     
-
     Entity* cameraEntity = new Entity{};
 
     Transformation* trans3 = new Transformation{};
